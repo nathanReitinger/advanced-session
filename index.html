@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[advanced session]</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234E2A84'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="static/style.css?v=965a0b7971">
+<link rel="stylesheet" href="static/style.css?v=9438aee94d">
 <script>/* show "Who am I?" straight away to anyone who has not checked in on this browser */
 try { if (!localStorage.getItem("ws.advanced-session.token")) document.documentElement.classList.add('need-name'); }
 catch (e) { document.documentElement.classList.add('need-name'); }</script>
@@ -447,24 +447,50 @@ catch (e) { document.documentElement.classList.add('need-name'); }</script>
   </details>
   
   
+  
+  <section class="card" id="step-n-bonus-level">
+    <h2>Step n — Bonus Level</h2>
+    <div class="md"><div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Add in this dataset to increase the information we know about the defendants. The new dataset lives here: <a href="https://nathanReitinger.github.io/harborline-registry/" target="_blank" rel="noopener">https://nathanReitinger.github.io/harborline-registry/</a>.</div><h4>Tips</h4><ul>
+<li>Break the task up into parts and verify each part. The frist part is whether you've downloaded all of the new data.</li>
+</ul>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>We are adding in information about the plaintiffs and defendants. A new dataset is at <a href="https://nathanReitinger.github.io/harborline-registry/" target="_blank" rel="noopener">https://nathanReitinger.github.io/harborline-registry/</a>.</p>
+<p>I want you to pull down that information, save it somewhere, and then match company names and create a new part of the dashboard that visualizes the results.</p>
+<p>Do this in another tab of the existing dashboard.</p>
+</div>
+<div class="callout verify" style="background:#FF7F7F; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Verify:</strong> Did you capture all of the data?</div><ul>
+<li>The second part is what did you match on? If a defendant company has a different name than that found in the registry, how will Claude handle that?</li>
+</ul>
+<div class="callout verify" style="background:#FF7F7F; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Verify:</strong> How were the matches made, was it exact or loose?</div><ul>
+<li>What exactly was the match requirement (exact or fuzzy)</li>
+</ul>
+<div class="callout improve" style="background:#FFDBBB; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0; background: #ffc080; border-left-color: #e8770e"><strong>Improvements:</strong> What could be better?</div><ul>
+<li>maybe you want a way to review matches and approve them yourself</li>
+<li>maybe you would like to resolve all discrepancies and then hide information on the dashboard about matching</li>
+<li>maybe you want to visualize information from the newely added dataset</li>
+</ul>
+<h4>What does success look like?</h4><p><img class="shot" data-src="img/d310b1a185e455f2.webp" alt="combine-dataset-success" width="1600" height="1072"></p>
+</div>
+  </section>
+  
+  
+  
+  <section class="card" id="section">
+    <h2></h2>
+    <div class="md"></div>
+  </section>
+  
+  
 
   <p class="foot"><button type="button" class="link" data-instructor>Instructor sign-in</button></p>
 </main>
 
 <aside class="side">
-  <details class="stats" open>
-    <summary>
-      <svg class="pie" viewBox="0 0 32 32" aria-hidden="true"><circle class="pie-bg" cx="16" cy="16" r="16"/><circle class="pie-fill" cx="16" cy="16" r="8" stroke-dasharray="0 50.27" transform="rotate(-90 16 16)"/></svg>
-      <span class="stats-title">Progress</span>
-      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-    </summary>
+  <details class="stats">
+    <summary><span class="stats-title">On the website</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
     <dl class="stats-body">
-      <div class="stats-row stats-here"><dt>On the website now</dt><dd>–</dd></div>
-      <div class="stats-row" data-step="step-0"><dt>0. setup</dt><dd>–</dd></div>
-      <div class="stats-row" data-step="step-1"><dt>1. scraping</dt><dd>–</dd></div>
-      <div class="stats-row" data-step="step-2"><dt>2. dashboard</dt><dd>–</dd></div>
-      <div class="stats-row" data-step="step-3"><dt>3. verify</dt><dd>–</dd></div>
-      <div class="stats-row" data-step="step-4"><dt>4. analysis</dt><dd>–</dd></div>
+      <div class="stats-row stats-people"><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span class="label">People</span></dt><dd>–</dd></div>
+      <div class="stats-row stats-bots"><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13v1M15 13v1M9.5 17h5"/></svg><span class="label">Bots</span></dt><dd>–</dd></div>
     </dl>
   </details>
 
@@ -494,12 +520,11 @@ catch (e) { document.documentElement.classList.add('need-name'); }</script>
   <div class="whoami-card" role="dialog" aria-modal="true" aria-labelledby="instructor-title">
     <div class="card-head"><h2 id="instructor-title">Instructor</h2><button type="button" id="instructor-close" class="link">Close</button></div>
     <form id="instructor-form" novalidate>
-      <input id="instructor-email" type="email" autocomplete="username" placeholder="Email" aria-label="Email" spellcheck="false">
       <input id="instructor-password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password">
       <button type="submit" class="primary">Sign in</button>
     </form>
     <div id="instructor-panel" hidden>
-      <p class="signed-in">Signed in as <strong id="instructor-who"></strong></p>
+      <p class="signed-in">You're signed in as the instructor.</p>
       <button type="button" id="clear-all" class="primary danger">Clear everyone</button>
       <p class="hint">Removes every name and check mark. Anyone with the page open is checked back in under the same name, with nothing ticked.</p>
       <button type="button" id="instructor-out" class="link">Sign out</button>
@@ -513,6 +538,6 @@ catch (e) { document.documentElement.classList.add('need-name'); }</script>
 <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
 <script>window.WORKSHOP = {"firebase": {"apiKey": "AIzaSyBnbCFSODOD29WBmHtu_8E5MhXR4-OMYbQ", "appId": "1:107931725699:web:18faae68813b8fdcba90b6", "authDomain": "advanced-session.firebaseapp.com", "databaseURL": "https://advanced-session-default-rtdb.firebaseio.com", "messagingSenderId": "107931725699", "projectId": "advanced-session", "storageBucket": "advanced-session.firebasestorage.app"}, "firebaseSdk": "https://www.gstatic.com/firebasejs/12.19.0", "room": "advanced-session", "steps": [{"done": "step-0:done", "id": "step-0", "num": "0", "verify": []}, {"done": "step-1:done", "id": "step-1", "num": "1", "verify": ["step-1:verify-1"]}, {"done": "step-2:done", "id": "step-2", "num": "2", "verify": ["step-2:verify-1"]}, {"done": "step-3:done", "id": "step-3", "num": "3", "verify": []}, {"done": "step-4:done", "id": "step-4", "num": "4", "verify": []}], "tokenKey": "ws.advanced-session.token"};</script>
-<script src="static/app.js?v=965a0b7971"></script>
+<script src="static/app.js?v=9438aee94d"></script>
 </body>
 </html>

@@ -17,13 +17,30 @@
   let me = null;          // { id, name }
   let mine = new Set();   // the boxes I have ticked
   let room = null;        // everyone's names and ticks: { v, boot, people: [[id, name]], checks: {item: [ids]},
-                          //   online: [ids] (GitHub Pages version: who has the page open right now) }
+                          //   here: { humans, bots, people: [ids] } (GitHub Pages version: who has the page open) }
 
   const stepOf = {};
   CFG.steps.forEach(s => { stepOf[s.done] = s; s.verify.forEach(v => { stepOf[v] = s; }); });
   const stepEl = s => $(`details.step[data-step="${s.id}"]`);
   const verified = s => s.verify.every(v => mine.has(v));
   const fail = (status, message, data) => Object.assign(new Error(message), { status, data });
+
+  // This browser's visitor id (all its tabs share it), for counting who is on the website.
+  function browserId() {
+    const key = 'ws.visitor';
+    let id = saved.get(key);
+    if (!/^[0-9a-f]{16}$/.test(id || '')) {
+      id = Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, '0')).join('');
+      saved.set(key, id);
+    }
+    return id;
+  }
+  // Automated browsers usually say so: the WebDriver flag, or a user agent such as HeadlessChrome
+  // or "...bot...". Crawlers that do not run the page's script never connect, so they are not counted.
+  function looksAutomated() {
+    try { if (navigator.webdriver) return true; } catch { /* ignore */ }
+    return /bot\b|crawl|spider|slurp|headless|lighthouse|phantomjs|puppeteer|playwright|selenium/i.test(navigator.userAgent || '');
+  }
 
   // Both keep check marks with the same calls: me(), join(name), check(item, on), watch(onRoom), refresh().
   const backend = CFG.firebase ? firebaseBackend() : laptopBackend();
@@ -111,41 +128,58 @@
   function firebaseBackend() {
     const base = `rooms/${CFG.room}`;
     let fb = null;
-    let app = null;
     let db = null;
-    let connected = false;
-    let here = null;   // the person this tab says is on the page
-    let mark = null;
     const ready = (async () => {
       const [appSdk, dbSdk] = await Promise.all([
         import(`${CFG.firebaseSdk}/firebase-app.js`), import(`${CFG.firebaseSdk}/firebase-database.js`)]);
       fb = dbSdk;
-      app = appSdk.initializeApp(CFG.firebase);
-      db = dbSdk.getDatabase(app);
-      fb.onValue(fb.ref(db, '.info/connected'), snap => {
-        connected = snap.val() === true;
-        markHere();
-      });
+      db = dbSdk.getDatabase(appSdk.initializeApp(CFG.firebase));
+      fb.onValue(fb.ref(db, '.info/connected'), snap => { if (snap.val() === true) newMark(); });
     })();
     const node = path => fb.ref(db, `${base}/${path}`);
 
-    // Who is on the page right now: while this tab is open and connected it keeps a mark under
-    // online/<person>, and Firebase deletes the mark as soon as the tab closes or loses its connection.
-    function markHere() {
-      if (!here || !connected) return;
-      const m = mark = fb.push(node(`online/${here}`));
-      fb.onDisconnect(m).remove()
-        .then(() => fb.set(m, true))
-        .catch(() => { /* rules without "online": the room counts everyone who checked in */ });
+    // Who is on the page right now. Every open tab, checked in or not, keeps a mark under
+    // here/<browser>/<tab> while it is connected, and Firebase deletes the mark as soon as the tab
+    // closes or loses its connection. The mark says who the tab checked in as (if anyone) and
+    // whether the browser says it is automated (a bot).
+    const visitor = browserId();
+    const bot = looksAutomated();
+    let person = '';
+    let mark = null;
+    let stopWatching = null;
+    let writing = false;
+    let again = false;
+    let refused = false;   // the database rules have no "here" yet
+
+    function newMark() {   // on every (re)connection; Firebase has deleted the old mark itself
+      if (stopWatching) stopWatching();
+      const m = mark = fb.push(node(`here/${visitor}`));
+      fb.onDisconnect(m).remove().catch(() => {});
+      writeMark();
+      // Put the mark back if it disappears while we are connected (the room was cleared).
+      stopWatching = fb.onValue(m, snap => { if (!snap.exists() && m === mark) writeMark(); });
     }
-    function setHere(id) {
-      if (mark) {
-        fb.onDisconnect(mark).cancel().catch(() => {});
-        fb.remove(mark).catch(() => {});
-        mark = null;
+    async function writeMark() {
+      if (!mark || refused) return;
+      if (writing) { again = true; return; }
+      writing = true;
+      try {
+        await fb.set(mark, { p: person, bot });
+      } catch {
+        try {   // checked in as someone the room no longer has (it was just cleared): count the tab anyway
+          if (!person) throw new Error('refused');
+          await fb.set(mark, { p: '', bot });
+        } catch {
+          refused = true;
+        }
+      } finally {
+        writing = false;
       }
-      here = id;
-      markHere();
+      if (again) { again = false; writeMark(); }
+    }
+    function setPerson(id) {
+      person = id || '';
+      writeMark();
     }
 
     // A person is their name (ignoring case and spacing), so typing the same name on another
@@ -159,42 +193,26 @@
       return Object.keys((await fb.get(node(`checks/${id}`))).val() || {});
     }
 
-    // The instructor's sign-in (Firebase Authentication), loaded only when someone opens it.
-    let authSdk = null;
-    let auth = null;
-    async function instructorAuth() {
-      await ready;
-      if (!auth) {
-        const sdk = await import(`${CFG.firebaseSdk}/firebase-auth.js`);
-        auth = sdk.initializeAuth(app, { persistence: [sdk.indexedDBLocalPersistence, sdk.browserLocalPersistence] });
-        authSdk = sdk;
-      }
-      return auth;
-    }
+    // The instructor's password is checked by the database rules (firebase-rules.json): writing it
+    // to instructor/<room> only works with the right one, and a room can only be cleared together
+    // with that write.
+    const instructorMark = password => ({ password, at: fb.serverTimestamp() });
 
     let version = 0;
     return {
-      async onInstructor(show) {
-        const a = await instructorAuth();
-        authSdk.onAuthStateChanged(a, user => show(user ? user.email : null));
-      },
-      async signIn(email, password) {
-        const a = await instructorAuth();
-        await authSdk.signInWithEmailAndPassword(a, email, password);
-      },
-      async signOut() {
-        const a = await instructorAuth();
-        await authSdk.signOut(a);
-      },
-      async clearAll() {   // the database rules allow this for the instructor's account only
+      async instructorCheck(password) {
         await ready;
-        await fb.remove(fb.ref(db, base));
+        await fb.set(fb.ref(db, `instructor/${CFG.room}`), instructorMark(password));
+      },
+      async clearAll(password) {
+        await ready;
+        await fb.update(fb.ref(db), { [base]: null, [`instructor/${CFG.room}`]: instructorMark(password) });
       },
       async me() {
         await ready;
         const person = await fb.get(node(`people/${token}`));
         if (!person.exists()) throw fail(401, 'Please check in again.');
-        setHere(token);
+        setPerson(token);
         return { id: token, name: person.val().name, mine: await ticksOf(token) };
       },
       async join(typed) {
@@ -211,7 +229,7 @@
             if (!person.exists()) throw err;
           }
         }
-        setHere(id);
+        setPerson(id);
         return { token: id, id, name: person.exists() ? person.val().name : name, mine: await ticksOf(id), rejoined };
       },
       async check(item, checked) {
@@ -239,8 +257,13 @@
           Object.entries(val.checks || {}).forEach(([id, items]) => {
             Object.keys(items || {}).forEach(item => { (checks[item] = checks[item] || []).push(id); });
           });
+          // One browser is one visitor, however many tabs it has open.
+          const visitors = Object.values(val.here || {}).map(tabs => Object.values(tabs || {}));
+          const bots = visitors.filter(tabs => tabs.some(m => m && m.bot)).length;
+          const present = new Set(visitors.flat().map(m => m && m.p).filter(Boolean));
+          const here = val.here ? { humans: visitors.length - bots, bots, people: [...present] } : null;
           version += 1;
-          onRoom({ v: version, boot: 'firebase', people, checks, online: Object.keys(val.online || {}) });
+          onRoom({ v: version, boot: 'firebase', people, checks, here });
         });
         // Firebase's free plan allows 100 open connections at once, so a tab left hidden for an hour
         // (longer than the session) lets go of its connection, and picks it up again when it is shown.
@@ -415,38 +438,33 @@
 
   // -------------------------------------------------------------- the room
 
-  const PIE = 2 * Math.PI * 8;   // the pie's slice is a dash around a circle of radius 8
-
   function showRoom() {
     if (!room) return;
     const sets = {};
     Object.entries(room.checks).forEach(([item, ids]) => { sets[item] = new Set(ids); });
     const has = (item, id) => (me && id === me.id ? mine.has(item) : Boolean(sets[item] && sets[item].has(id)));
-    // Everyone with the page open right now. (The laptop version counts everyone who checked in.)
-    const online = room.online && room.online.length ? new Set(room.online) : null;
+    // Everyone with the page open right now. (The laptop version, and a database whose rules have
+    // no "here" yet, count everyone who checked in.)
+    const here = room.here;
+    const online = here ? new Set(here.people) : null;
     const people = online ? room.people.filter(([id]) => online.has(id) || (me && id === me.id)) : room.people;
-    let total = 0;
     CFG.steps.forEach(s => {
       const rows = people.map(([id, name]) => ({ id, name, done: has(s.done, id) }));
       const done = rows.filter(p => p.done).length;
-      total += done;
       const count = $('.room-count', stepEl(s));
       count.textContent = `${done}/${rows.length}`;
       count.title = `${done} of the ${rows.length} ${online ? 'people on the website now' : 'people who checked in'} `
         + `${done === 1 ? 'is' : 'are'} done`;
       drawGrid($('.grid', stepEl(s)), rows);
-      const row = $(`.stats-row[data-step="${s.id}"] dd`);
-      if (row) row.textContent = `${done}/${rows.length}`;
     });
 
-    // The Progress box: how many people are here, and a pie of every step done by everyone together.
+    // The box on the right: everyone on the website, checked in or not, people and bots apart.
     const stats = $('.stats');
     if (!stats) return;
-    $('.stats-here dt', stats).textContent = online ? 'On the website now' : 'Checked in';
-    $('.stats-here dd', stats).textContent = people.length;
-    const slots = people.length * CFG.steps.length;
-    $('.pie-fill', stats).setAttribute('stroke-dasharray', `${slots ? ((PIE * total) / slots).toFixed(2) : 0} ${PIE.toFixed(2)}`);
-    $('summary', stats).title = `Every step, everyone together: ${total} of ${slots} done`;
+    $('.stats-people .label', stats).textContent = here ? 'People' : 'Checked in';
+    $('.stats-people dd', stats).textContent = here ? here.humans : people.length;
+    $('.stats-bots', stats).hidden = !here;
+    $('.stats-bots dd', stats).textContent = here ? here.bots : '';
   }
 
   function initials(name) {
@@ -507,83 +525,73 @@
 
   // ------------------------------------------------------------ instructor
 
-  // GitHub Pages version only. The instructor signs in with the email and password of the account
-  // made in Firebase (Authentication), and can then clear the room.
+  // GitHub Pages version only. The instructor signs in with a password, which the database rules
+  // check (it is not in this page), and can then clear the room. Signing in lasts until the tab closes.
   const teacher = $('#instructor');
   if (teacher) {
+    const KEY = `ws.${CFG.room}.instructor`;
+    const kept = {
+      get() { try { return sessionStorage.getItem(KEY); } catch { return null; } },
+      set(v) { try { sessionStorage.setItem(KEY, v); } catch { /* fine: signed in until reload */ } },
+      del() { try { sessionStorage.removeItem(KEY); } catch { /* ignore */ } },
+    };
+    let password = kept.get();
     const form = $('#instructor-form');
+    const field = $('#instructor-password');
     const panel = $('#instructor-panel');
     const problem = $('#instructor-error');
     const note = $('#instructor-note');
     const say = (el, msg) => { el.textContent = msg || ''; el.hidden = !msg; };
-    let listening = false;
+    const showTeacher = () => { form.hidden = Boolean(password); panel.hidden = !password; };
 
-    const showTeacher = email => {   // the signed-in instructor's email, or null
-      form.hidden = Boolean(email);
-      panel.hidden = !email;
-      $('#instructor-who').textContent = email || '';
-    };
-    async function openTeacher() {
+    function openTeacher() {
       say(problem, ''); say(note, '');
+      showTeacher();
       teacher.hidden = false;
-      if (!listening) {
-        listening = true;
-        try {
-          await backend.onInstructor(showTeacher);   // loads Firebase Authentication the first time
-        } catch {
-          listening = false;
-          say(problem, "Can't reach the sign-in service. Check your connection and try again.");
-        }
-      }
-      setTimeout(() => (panel.hidden ? $('#instructor-email') : $('#clear-all')).focus(), 40);
+      setTimeout(() => (password ? $('#clear-all') : field).focus(), 40);
     }
-    const closeTeacher = () => { teacher.hidden = true; };
-
     $$('[data-instructor]').forEach(button => button.addEventListener('click', openTeacher));
-    $('#instructor-close').addEventListener('click', closeTeacher);
-    teacher.addEventListener('keydown', e => { if (e.key === 'Escape') closeTeacher(); });
+    $('#instructor-close').addEventListener('click', () => { teacher.hidden = true; });
+    teacher.addEventListener('keydown', e => { if (e.key === 'Escape') teacher.hidden = true; });
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      const email = $('#instructor-email').value.trim();
-      const password = $('#instructor-password').value;
-      if (!email || !password) { say(problem, 'Type your email and password.'); return; }
+      const typed = field.value;
+      if (!typed) { say(problem, 'Type the password.'); return; }
       const button = $('.primary', form);
       button.disabled = true;
       say(problem, '');
       try {
-        await backend.signIn(email, password);
-        $('#instructor-password').value = '';
-      } catch (err) {
-        say(problem, signInProblem(err));
+        await backend.instructorCheck(typed);
+        password = typed;
+        kept.set(typed);
+        field.value = '';
+        showTeacher();
+        $('#clear-all').focus();
+      } catch {
+        say(problem, 'Wrong password.');
       } finally {
         button.disabled = false;
       }
     });
-    $('#instructor-out').addEventListener('click', () => { say(note, ''); backend.signOut().catch(() => {}); });
+    $('#instructor-out').addEventListener('click', () => {
+      password = null;
+      kept.del();
+      say(note, '');
+      showTeacher();
+    });
 
     $('#clear-all').addEventListener('click', async () => {
       if (!confirm('Clear everyone?\n\nThis removes every name and check mark. Anyone with the page open '
         + 'is checked back in under the same name, with nothing ticked.')) return;
       say(problem, ''); say(note, '');
       try {
-        await backend.clearAll();
+        await backend.clearAll(password);
         say(note, 'Cleared. Everyone starts fresh.');
       } catch {
-        say(problem, "Couldn't clear: the database rules don't allow this account yet (see HOW-TO-RUN.md).");
+        say(problem, "Couldn't clear. Sign out, then sign in again.");
       }
     });
-  }
-
-  function signInProblem(err) {
-    const code = (err && err.code) || '';
-    if (/invalid-credential|wrong-password|user-not-found|invalid-email|invalid-login/.test(code)) return 'Wrong email or password.';
-    if (code.includes('too-many-requests')) return 'Too many tries. Wait a minute, then try again.';
-    if (/operation-not-allowed|configuration-not-found|admin-restricted/.test(code)) {
-      return 'Email and password sign-in is not turned on in Firebase yet (Authentication, Sign-in method).';
-    }
-    if (code.includes('network-request-failed')) return "Can't reach the sign-in service. Check your connection and try again.";
-    return "Couldn't sign in. Try again.";
   }
 
   // ------------------------------------------------------------------ images
