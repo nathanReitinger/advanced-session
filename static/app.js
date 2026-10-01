@@ -16,7 +16,8 @@
   let token = saved.get(TOKEN_KEY);
   let me = null;          // { id, name }
   let mine = new Set();   // the boxes I have ticked
-  let room = null;        // everyone's names and ticks: { v, boot, people: [[id, name]], checks: {item: [ids]} }
+  let room = null;        // everyone's names and ticks: { v, boot, people: [[id, name]], checks: {item: [ids]},
+                          //   online: [ids] (GitHub Pages version: who has the page open right now) }
 
   const stepOf = {};
   CFG.steps.forEach(s => { stepOf[s.done] = s; s.verify.forEach(v => { stepOf[v] = s; }); });
@@ -111,13 +112,39 @@
     const base = `rooms/${CFG.room}`;
     let fb = null;
     let db = null;
+    let connected = false;
+    let here = null;   // the person this tab says is on the page
+    let mark = null;
     const ready = (async () => {
       const [appSdk, dbSdk] = await Promise.all([
         import(`${CFG.firebaseSdk}/firebase-app.js`), import(`${CFG.firebaseSdk}/firebase-database.js`)]);
       fb = dbSdk;
       db = dbSdk.getDatabase(appSdk.initializeApp(CFG.firebase));
+      fb.onValue(fb.ref(db, '.info/connected'), snap => {
+        connected = snap.val() === true;
+        markHere();
+      });
     })();
     const node = path => fb.ref(db, `${base}/${path}`);
+
+    // Who is on the page right now: while this tab is open and connected it keeps a mark under
+    // online/<person>, and Firebase deletes the mark as soon as the tab closes or loses its connection.
+    function markHere() {
+      if (!here || !connected) return;
+      const m = mark = fb.push(node(`online/${here}`));
+      fb.onDisconnect(m).remove()
+        .then(() => fb.set(m, true))
+        .catch(() => { /* rules without "online": the room counts everyone who checked in */ });
+    }
+    function setHere(id) {
+      if (mark) {
+        fb.onDisconnect(mark).cancel().catch(() => {});
+        fb.remove(mark).catch(() => {});
+        mark = null;
+      }
+      here = id;
+      markHere();
+    }
 
     // A person is their name (ignoring case and spacing), so typing the same name on another
     // browser brings your check marks back, as on the laptop version.
@@ -136,6 +163,7 @@
         await ready;
         const person = await fb.get(node(`people/${token}`));
         if (!person.exists()) throw fail(401, 'Please check in again.');
+        setHere(token);
         return { id: token, name: person.val().name, mine: await ticksOf(token) };
       },
       async join(typed) {
@@ -152,6 +180,7 @@
             if (!person.exists()) throw err;
           }
         }
+        setHere(id);
         return { token: id, id, name: person.exists() ? person.val().name : name, mine: await ticksOf(id), rejoined };
       },
       async check(item, checked) {
@@ -162,7 +191,8 @@
           throw fail(409, 'Tick the Verify box first.', { mine: [...have] });
         }
         const changes = { [item]: checked ? true : null };
-        if (!checked && item !== s.done) changes[s.done] = null;   // un-verifying un-does the step
+        // Unticking the step unticks its Verify boxes too; unticking a Verify box un-does the step.
+        if (!checked) (item === s.done ? s.verify : [s.done]).forEach(other => { changes[other] = null; });
         await fb.update(node(`checks/${token}`), changes);
         Object.entries(changes).forEach(([k, on]) => (on ? have.add(k) : have.delete(k)));
         return { mine: [...have] };
@@ -179,14 +209,15 @@
             Object.keys(items || {}).forEach(item => { (checks[item] = checks[item] || []).push(id); });
           });
           version += 1;
-          onRoom({ v: version, boot: 'firebase', people, checks });
+          onRoom({ v: version, boot: 'firebase', people, checks, online: Object.keys(val.online || {}) });
         });
-        // Firebase's free plan allows 100 open connections at once, so a tab that stays hidden
-        // for a while lets go of its connection, and picks it up again when it is shown.
+        // Firebase's free plan allows 100 open connections at once, so a tab left hidden for an hour
+        // (longer than the session) lets go of its connection, and picks it up again when it is shown.
+        // Until then it still counts as on the page, even while its owner works in another window.
         let offline = 0;
         document.addEventListener('visibilitychange', () => {
           clearTimeout(offline);
-          if (document.hidden) offline = setTimeout(() => fb.goOffline(db), 5 * 60 * 1000);
+          if (document.hidden) offline = setTimeout(() => fb.goOffline(db), 60 * 60 * 1000);
           else fb.goOnline(db);
         });
       },
@@ -312,7 +343,8 @@
     if (on) mine.add(item);
     else {
       mine.delete(item);
-      if (item !== s.done) mine.delete(s.done);   // un-verifying un-does the step
+      // Unticking the step unticks its Verify boxes too; unticking a Verify box un-does the step.
+      (item === s.done ? s.verify : [s.done]).forEach(other => mine.delete(other));
     }
   }
 
@@ -336,14 +368,17 @@
     const sets = {};
     Object.entries(room.checks).forEach(([item, ids]) => { sets[item] = new Set(ids); });
     const has = (item, id) => (me && id === me.id ? mine.has(item) : Boolean(sets[item] && sets[item].has(id)));
-    const people = room.people;
+    // Everyone with the page open right now. (The laptop version counts everyone who checked in.)
+    const online = room.online && room.online.length ? new Set(room.online) : null;
+    const people = online ? room.people.filter(([id]) => online.has(id) || (me && id === me.id)) : room.people;
     CFG.steps.forEach(s => {
       const rows = people.map(([id, name]) => ({ id, name, done: has(s.done, id) }));
       const done = rows.filter(p => p.done).length;
-      const pct = people.length ? Math.round((100 * done) / people.length) : 0;
-      const el = stepEl(s);
-      $('.room-pct', el).textContent = `${pct}% done`;
-      drawGrid($('.grid', el), rows);
+      const count = $('.room-count', stepEl(s));
+      count.textContent = `${done}/${rows.length}`;
+      count.title = `${done} of the ${rows.length} ${online ? 'people on the website now' : 'people who checked in'} `
+        + `${done === 1 ? 'is' : 'are'} done`;
+      drawGrid($('.grid', stepEl(s)), rows);
     });
   }
 
@@ -384,6 +419,49 @@
     cells.forEach((cell, id) => {
       if (!keep.has(id)) { cell.remove(); cells.delete(id); }
     });
+  }
+
+  // ------------------------------------------------------------ the timeline
+
+  // One dot per step, on the right. The step you are reading lights up as you scroll, and
+  // clicking a step opens it and takes you there.
+  const toc = $('.toc');
+  const tocLinks = toc ? $$('a', toc) : [];
+  const tocSteps = tocLinks.map(a => document.getElementById(a.getAttribute('href').slice(1)));
+  let placeQueued = false;
+
+  function showPlace() {
+    placeQueued = false;
+    // Your place is a line a third of the way down the window. Near the end of the page it slides
+    // down to the bottom of the window, so the last step can light up too.
+    const left = document.documentElement.scrollHeight - innerHeight - scrollY;
+    const line = Math.max(innerHeight / 3, innerHeight - left);
+    let at = -1;
+    tocSteps.forEach((el, i) => { if (el.getBoundingClientRect().top <= line) at = i; });
+    tocLinks.forEach((a, i) => {
+      a.classList.toggle('current', i === at);
+      a.classList.toggle('passed', i < at);
+      if (i === at) a.setAttribute('aria-current', 'step');
+      else a.removeAttribute('aria-current');
+    });
+    const middle = a => a.offsetTop + a.offsetHeight / 2;
+    toc.style.setProperty('--fill', `${at > 0 ? middle(tocLinks[at]) - middle(tocLinks[0]) : 0}px`);
+  }
+
+  if (toc) {
+    const later = () => { if (!placeQueued) { placeQueued = true; requestAnimationFrame(showPlace); } };
+    addEventListener('scroll', later, { passive: true });
+    addEventListener('resize', later);
+    document.addEventListener('toggle', later, true);
+    toc.addEventListener('click', e => {
+      const i = tocLinks.indexOf(e.target.closest('a'));
+      if (i < 0) return;
+      e.preventDefault();
+      tocSteps[i].open = true;
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      tocSteps[i].scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'auto' });
+    });
+    showPlace();
   }
 
   // ------------------------------------------------------------------ images
