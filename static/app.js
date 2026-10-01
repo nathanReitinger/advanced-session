@@ -111,6 +111,7 @@
   function firebaseBackend() {
     const base = `rooms/${CFG.room}`;
     let fb = null;
+    let app = null;
     let db = null;
     let connected = false;
     let here = null;   // the person this tab says is on the page
@@ -119,7 +120,8 @@
       const [appSdk, dbSdk] = await Promise.all([
         import(`${CFG.firebaseSdk}/firebase-app.js`), import(`${CFG.firebaseSdk}/firebase-database.js`)]);
       fb = dbSdk;
-      db = dbSdk.getDatabase(appSdk.initializeApp(CFG.firebase));
+      app = appSdk.initializeApp(CFG.firebase);
+      db = dbSdk.getDatabase(app);
       fb.onValue(fb.ref(db, '.info/connected'), snap => {
         connected = snap.val() === true;
         markHere();
@@ -157,8 +159,37 @@
       return Object.keys((await fb.get(node(`checks/${id}`))).val() || {});
     }
 
+    // The instructor's sign-in (Firebase Authentication), loaded only when someone opens it.
+    let authSdk = null;
+    let auth = null;
+    async function instructorAuth() {
+      await ready;
+      if (!auth) {
+        const sdk = await import(`${CFG.firebaseSdk}/firebase-auth.js`);
+        auth = sdk.initializeAuth(app, { persistence: [sdk.indexedDBLocalPersistence, sdk.browserLocalPersistence] });
+        authSdk = sdk;
+      }
+      return auth;
+    }
+
     let version = 0;
     return {
+      async onInstructor(show) {
+        const a = await instructorAuth();
+        authSdk.onAuthStateChanged(a, user => show(user ? user.email : null));
+      },
+      async signIn(email, password) {
+        const a = await instructorAuth();
+        await authSdk.signInWithEmailAndPassword(a, email, password);
+      },
+      async signOut() {
+        const a = await instructorAuth();
+        await authSdk.signOut(a);
+      },
+      async clearAll() {   // the database rules allow this for the instructor's account only
+        await ready;
+        await fb.remove(fb.ref(db, base));
+      },
       async me() {
         await ready;
         const person = await fb.get(node(`people/${token}`));
@@ -248,8 +279,27 @@
       room = data;
       showRoom();
       if (token && (!me || restarted)) loadMe().catch(() => {});
-      if (CFG.firebase && me && !room.people.some(([id]) => id === me.id)) stale();   // the room was cleared
+      if (CFG.firebase && me && !rejoining && !room.people.some(([id]) => id === me.id)) rejoin();
     });
+  }
+
+  // The room was cleared (by the instructor, or in the Firebase console). Check back in under the
+  // same name, with nothing ticked, so the room shows who is really here.
+  let rejoining = false;
+  async function rejoin() {
+    rejoining = true;
+    try {
+      const r = await backend.join(me.name);
+      token = r.token;
+      saved.set(TOKEN_KEY, token);
+      me = { id: r.id, name: r.name };
+      mine = new Set(r.mine);
+      showMe(); showMine(); showRoom();
+    } catch {
+      stale();
+    } finally {
+      rejoining = false;
+    }
   }
 
   // ---------------------------------------------------------------- who am I
@@ -365,6 +415,8 @@
 
   // -------------------------------------------------------------- the room
 
+  const PIE = 2 * Math.PI * 8;   // the pie's slice is a dash around a circle of radius 8
+
   function showRoom() {
     if (!room) return;
     const sets = {};
@@ -373,15 +425,28 @@
     // Everyone with the page open right now. (The laptop version counts everyone who checked in.)
     const online = room.online && room.online.length ? new Set(room.online) : null;
     const people = online ? room.people.filter(([id]) => online.has(id) || (me && id === me.id)) : room.people;
+    let total = 0;
     CFG.steps.forEach(s => {
       const rows = people.map(([id, name]) => ({ id, name, done: has(s.done, id) }));
       const done = rows.filter(p => p.done).length;
+      total += done;
       const count = $('.room-count', stepEl(s));
       count.textContent = `${done}/${rows.length}`;
       count.title = `${done} of the ${rows.length} ${online ? 'people on the website now' : 'people who checked in'} `
         + `${done === 1 ? 'is' : 'are'} done`;
       drawGrid($('.grid', stepEl(s)), rows);
+      const row = $(`.stats-row[data-step="${s.id}"] dd`);
+      if (row) row.textContent = `${done}/${rows.length}`;
     });
+
+    // The Progress box: how many people are here, and a pie of every step done by everyone together.
+    const stats = $('.stats');
+    if (!stats) return;
+    $('.stats-here dt', stats).textContent = online ? 'On the website now' : 'Checked in';
+    $('.stats-here dd', stats).textContent = people.length;
+    const slots = people.length * CFG.steps.length;
+    $('.pie-fill', stats).setAttribute('stroke-dasharray', `${slots ? ((PIE * total) / slots).toFixed(2) : 0} ${PIE.toFixed(2)}`);
+    $('summary', stats).title = `Every step, everyone together: ${total} of ${slots} done`;
   }
 
   function initials(name) {
@@ -438,6 +503,87 @@
       const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
       step.scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'auto' });
     });
+  }
+
+  // ------------------------------------------------------------ instructor
+
+  // GitHub Pages version only. The instructor signs in with the email and password of the account
+  // made in Firebase (Authentication), and can then clear the room.
+  const teacher = $('#instructor');
+  if (teacher) {
+    const form = $('#instructor-form');
+    const panel = $('#instructor-panel');
+    const problem = $('#instructor-error');
+    const note = $('#instructor-note');
+    const say = (el, msg) => { el.textContent = msg || ''; el.hidden = !msg; };
+    let listening = false;
+
+    const showTeacher = email => {   // the signed-in instructor's email, or null
+      form.hidden = Boolean(email);
+      panel.hidden = !email;
+      $('#instructor-who').textContent = email || '';
+    };
+    async function openTeacher() {
+      say(problem, ''); say(note, '');
+      teacher.hidden = false;
+      if (!listening) {
+        listening = true;
+        try {
+          await backend.onInstructor(showTeacher);   // loads Firebase Authentication the first time
+        } catch {
+          listening = false;
+          say(problem, "Can't reach the sign-in service. Check your connection and try again.");
+        }
+      }
+      setTimeout(() => (panel.hidden ? $('#instructor-email') : $('#clear-all')).focus(), 40);
+    }
+    const closeTeacher = () => { teacher.hidden = true; };
+
+    $$('[data-instructor]').forEach(button => button.addEventListener('click', openTeacher));
+    $('#instructor-close').addEventListener('click', closeTeacher);
+    teacher.addEventListener('keydown', e => { if (e.key === 'Escape') closeTeacher(); });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = $('#instructor-email').value.trim();
+      const password = $('#instructor-password').value;
+      if (!email || !password) { say(problem, 'Type your email and password.'); return; }
+      const button = $('.primary', form);
+      button.disabled = true;
+      say(problem, '');
+      try {
+        await backend.signIn(email, password);
+        $('#instructor-password').value = '';
+      } catch (err) {
+        say(problem, signInProblem(err));
+      } finally {
+        button.disabled = false;
+      }
+    });
+    $('#instructor-out').addEventListener('click', () => { say(note, ''); backend.signOut().catch(() => {}); });
+
+    $('#clear-all').addEventListener('click', async () => {
+      if (!confirm('Clear everyone?\n\nThis removes every name and check mark. Anyone with the page open '
+        + 'is checked back in under the same name, with nothing ticked.')) return;
+      say(problem, ''); say(note, '');
+      try {
+        await backend.clearAll();
+        say(note, 'Cleared. Everyone starts fresh.');
+      } catch {
+        say(problem, "Couldn't clear: the database rules don't allow this account yet (see HOW-TO-RUN.md).");
+      }
+    });
+  }
+
+  function signInProblem(err) {
+    const code = (err && err.code) || '';
+    if (/invalid-credential|wrong-password|user-not-found|invalid-email|invalid-login/.test(code)) return 'Wrong email or password.';
+    if (code.includes('too-many-requests')) return 'Too many tries. Wait a minute, then try again.';
+    if (/operation-not-allowed|configuration-not-found|admin-restricted/.test(code)) {
+      return 'Email and password sign-in is not turned on in Firebase yet (Authentication, Sign-in method).';
+    }
+    if (code.includes('network-request-failed')) return "Can't reach the sign-in service. Check your connection and try again.";
+    return "Couldn't sign in. Try again.";
   }
 
   // ------------------------------------------------------------------ images

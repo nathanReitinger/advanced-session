@@ -162,9 +162,32 @@ details[open] > summary > .chev { transform: rotate(180deg); }
 .me-tag span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 680px) { .wrap { padding-top: 64px; } }
 
-/* ---------- the timeline on the right: one dot per step, green once you are done with it ---------- */
+/* ---------- the right side: the Progress box, then the timeline ---------- */
 
-.toc { position: fixed; top: 50%; left: calc(50% + 438px); z-index: 20; transform: translateY(-50%); }
+.side { position: fixed; top: 72px; left: calc(50% + 438px); z-index: 20; display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+
+/* Progress: who is on the website, each step's count, and a pie of every step done by everyone */
+.stats { width: min(230px, calc(50vw - 462px)); background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px; font-size: 13.5px; }
+.stats > summary { list-style: none; display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 12px; border-radius: 12px; cursor: pointer; font-weight: 700; }
+.stats > summary::-webkit-details-marker { display: none; }
+.stats > summary:hover { background: var(--part-hover); }
+.stats[open] > summary { border-bottom: 1px solid var(--border); border-radius: 12px 12px 0 0; }
+.stats .chev .i { width: 16px; height: 16px; }
+.stats-title { flex: 1; }
+.pie { width: 20px; height: 20px; flex: none; }
+.pie-bg { fill: var(--cell); }
+.pie-fill { fill: none; stroke: var(--ok); stroke-width: 16; transition: stroke-dasharray .3s; }
+.stats-body { margin: 0; padding: 6px 12px 10px; }
+.stats-row { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; }
+.stats-row dt { overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
+.stats-row dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stats-here { margin-bottom: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.stats-here dt { color: var(--text); font-weight: 600; }
+@media (max-width: 1319px) {   /* no room beside the page: it floats in the bottom right corner */
+  .stats { position: fixed; right: 16px; bottom: 16px; width: 220px; box-shadow: 0 6px 22px rgba(30, 10, 60, .14); }
+}
+
+/* the timeline: one dot per step, green once you are done with it */
 .toc ol { position: relative; margin: 0; padding: 0; list-style: none; }
 .toc ol::before { content: ""; position: absolute; top: 12px; bottom: 12px; left: 11px; width: 2px; border-radius: 1px; background: var(--border-strong); }
 .toc li + li { margin-top: 18px; }
@@ -192,7 +215,7 @@ details[open] > summary > .chev { transform: rotate(180deg); }
   .toc a:hover .toc-label, .toc a:focus-visible .toc-label { opacity: 1; }
 }
 @media (max-width: 959px) { .toc { display: none; } }   /* no room beside the page at all */
-@media (prefers-reduced-motion: reduce) { .toc-dot, .toc-label { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .toc-dot, .toc-label, .pie-fill { transition: none; } }
 
 /* ---------- who am I ---------- */
 
@@ -207,6 +230,20 @@ details[open] > summary > .chev { transform: rotate(180deg); }
 .error { margin: 8px 0 0; color: #b4232a; font-size: 14px; font-weight: 600; }
 .primary { width: 100%; margin-top: 14px; padding: 12px 18px; cursor: pointer; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font-size: 16px; font-weight: 700; }
 .primary:disabled { opacity: .6; cursor: wait; }
+
+/* ---------- instructor (GitHub Pages version) ---------- */
+
+.foot { margin: 40px 0 0; text-align: center; }
+.link { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.link:hover { color: var(--accent); }
+.whoami-alt { display: block; margin: 16px auto 0; }
+.instructor { z-index: 70; }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.instructor-form input + input, #instructor-form input + input { margin-top: 10px; }
+.signed-in { margin: 0 0 4px; }
+.instructor .hint { margin: 8px 0 14px; color: var(--muted); font-size: 14px; }
+.primary.danger { background: #b4232a; }
+.note { margin: 10px 0 0; color: var(--ok); font-size: 14px; font-weight: 600; }
 
 /* only used when something could not be saved */
 .toast {

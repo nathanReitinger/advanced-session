@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[advanced session]</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234E2A84'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="static/style.css?v=47791181cf">
+<link rel="stylesheet" href="static/style.css?v=965a0b7971">
 <script>/* show "Who am I?" straight away to anyone who has not checked in on this browser */
 try { if (!localStorage.getItem("ws.advanced-session.token")) document.documentElement.classList.add('need-name'); }
 catch (e) { document.documentElement.classList.add('need-name'); }</script>
@@ -447,17 +447,37 @@ catch (e) { document.documentElement.classList.add('need-name'); }</script>
   </details>
   
   
+
+  <p class="foot"><button type="button" class="link" data-instructor>Instructor sign-in</button></p>
 </main>
 
-<nav class="toc" aria-label="Steps">
-  <ol>
-    <li><a href="#step-0" data-step="step-0"><span class="toc-dot"><span class="toc-num">0</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">Setup</span></a></li>
-    <li><a href="#step-1" data-step="step-1"><span class="toc-dot"><span class="toc-num">1</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">Collect the opinions</span></a></li>
-    <li><a href="#step-2" data-step="step-2"><span class="toc-dot"><span class="toc-num">2</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">Investigating the data</span></a></li>
-    <li><a href="#step-3" data-step="step-3"><span class="toc-dot"><span class="toc-num">3</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">Explicit verification</span></a></li>
-    <li><a href="#step-4" data-step="step-4"><span class="toc-dot"><span class="toc-num">4</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">Analysis</span></a></li>
-  </ol>
-</nav>
+<aside class="side">
+  <details class="stats" open>
+    <summary>
+      <svg class="pie" viewBox="0 0 32 32" aria-hidden="true"><circle class="pie-bg" cx="16" cy="16" r="16"/><circle class="pie-fill" cx="16" cy="16" r="8" stroke-dasharray="0 50.27" transform="rotate(-90 16 16)"/></svg>
+      <span class="stats-title">Progress</span>
+      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+    <dl class="stats-body">
+      <div class="stats-row stats-here"><dt>On the website now</dt><dd>–</dd></div>
+      <div class="stats-row" data-step="step-0"><dt>0. setup</dt><dd>–</dd></div>
+      <div class="stats-row" data-step="step-1"><dt>1. scraping</dt><dd>–</dd></div>
+      <div class="stats-row" data-step="step-2"><dt>2. dashboard</dt><dd>–</dd></div>
+      <div class="stats-row" data-step="step-3"><dt>3. verify</dt><dd>–</dd></div>
+      <div class="stats-row" data-step="step-4"><dt>4. analysis</dt><dd>–</dd></div>
+    </dl>
+  </details>
+
+  <nav class="toc" aria-label="Steps">
+    <ol>
+      <li><a href="#step-0" data-step="step-0"><span class="toc-dot"><span class="toc-num">0</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">setup</span></a></li>
+      <li><a href="#step-1" data-step="step-1"><span class="toc-dot"><span class="toc-num">1</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">scraping</span></a></li>
+      <li><a href="#step-2" data-step="step-2"><span class="toc-dot"><span class="toc-num">2</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">dashboard</span></a></li>
+      <li><a href="#step-3" data-step="step-3"><span class="toc-dot"><span class="toc-num">3</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">verify</span></a></li>
+      <li><a href="#step-4" data-step="step-4"><span class="toc-dot"><span class="toc-num">4</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="toc-label">analysis</span></a></li>
+    </ol>
+  </nav>
+</aside>
 
 <div id="whoami" class="whoami" hidden>
   <form id="whoami-form" class="whoami-card" novalidate>
@@ -465,12 +485,34 @@ catch (e) { document.documentElement.classList.add('need-name'); }</script>
     <input id="whoami-name" name="name" maxlength="60" autocomplete="name" placeholder="Your name" aria-label="Your name" spellcheck="false">
     <p id="whoami-error" class="error" role="alert" hidden></p>
     <button type="submit" class="primary">Start</button>
+    <button type="button" class="link whoami-alt" data-instructor>Instructor sign-in</button>
   </form>
 </div>
+
+
+<div id="instructor" class="whoami instructor" hidden>
+  <div class="whoami-card" role="dialog" aria-modal="true" aria-labelledby="instructor-title">
+    <div class="card-head"><h2 id="instructor-title">Instructor</h2><button type="button" id="instructor-close" class="link">Close</button></div>
+    <form id="instructor-form" novalidate>
+      <input id="instructor-email" type="email" autocomplete="username" placeholder="Email" aria-label="Email" spellcheck="false">
+      <input id="instructor-password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password">
+      <button type="submit" class="primary">Sign in</button>
+    </form>
+    <div id="instructor-panel" hidden>
+      <p class="signed-in">Signed in as <strong id="instructor-who"></strong></p>
+      <button type="button" id="clear-all" class="primary danger">Clear everyone</button>
+      <p class="hint">Removes every name and check mark. Anyone with the page open is checked back in under the same name, with nothing ticked.</p>
+      <button type="button" id="instructor-out" class="link">Sign out</button>
+    </div>
+    <p id="instructor-note" class="note" role="status" hidden></p>
+    <p id="instructor-error" class="error" role="alert" hidden></p>
+  </div>
+</div>
+
 
 <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
 <script>window.WORKSHOP = {"firebase": {"apiKey": "AIzaSyBnbCFSODOD29WBmHtu_8E5MhXR4-OMYbQ", "appId": "1:107931725699:web:18faae68813b8fdcba90b6", "authDomain": "advanced-session.firebaseapp.com", "databaseURL": "https://advanced-session-default-rtdb.firebaseio.com", "messagingSenderId": "107931725699", "projectId": "advanced-session", "storageBucket": "advanced-session.firebasestorage.app"}, "firebaseSdk": "https://www.gstatic.com/firebasejs/12.19.0", "room": "advanced-session", "steps": [{"done": "step-0:done", "id": "step-0", "num": "0", "verify": []}, {"done": "step-1:done", "id": "step-1", "num": "1", "verify": ["step-1:verify-1"]}, {"done": "step-2:done", "id": "step-2", "num": "2", "verify": ["step-2:verify-1"]}, {"done": "step-3:done", "id": "step-3", "num": "3", "verify": []}, {"done": "step-4:done", "id": "step-4", "num": "4", "verify": []}], "tokenKey": "ws.advanced-session.token"};</script>
-<script src="static/app.js?v=47791181cf"></script>
+<script src="static/app.js?v=965a0b7971"></script>
 </body>
 </html>
