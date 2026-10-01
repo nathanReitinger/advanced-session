@@ -356,6 +356,8 @@
       const done = mine.has(s.done);
       const locked = !done && !verified(s);
       el.classList.toggle('is-done', done);
+      const dot = $(`.toc a[data-step="${s.id}"]`);
+      if (dot) dot.classList.toggle('done', done);
       $('.finish', el).classList.toggle('locked', locked);
       $(`input[data-item="${s.done}"]`, el).disabled = locked;
     });
@@ -423,45 +425,19 @@
 
   // ------------------------------------------------------------ the timeline
 
-  // One dot per step, on the right. The step you are reading lights up as you scroll, and
-  // clicking a step opens it and takes you there.
+  // One dot per step, on the right. A step's dot turns green with a check mark once you are done
+  // with it (showMine does that), and clicking a step opens it and takes you there.
   const toc = $('.toc');
-  const tocLinks = toc ? $$('a', toc) : [];
-  const tocSteps = tocLinks.map(a => document.getElementById(a.getAttribute('href').slice(1)));
-  let placeQueued = false;
-
-  function showPlace() {
-    placeQueued = false;
-    // Your place is a line a third of the way down the window. Near the end of the page it slides
-    // down to the bottom of the window, so the last step can light up too.
-    const left = document.documentElement.scrollHeight - innerHeight - scrollY;
-    const line = Math.max(innerHeight / 3, innerHeight - left);
-    let at = -1;
-    tocSteps.forEach((el, i) => { if (el.getBoundingClientRect().top <= line) at = i; });
-    tocLinks.forEach((a, i) => {
-      a.classList.toggle('current', i === at);
-      a.classList.toggle('passed', i < at);
-      if (i === at) a.setAttribute('aria-current', 'step');
-      else a.removeAttribute('aria-current');
-    });
-    const middle = a => a.offsetTop + a.offsetHeight / 2;
-    toc.style.setProperty('--fill', `${at > 0 ? middle(tocLinks[at]) - middle(tocLinks[0]) : 0}px`);
-  }
-
   if (toc) {
-    const later = () => { if (!placeQueued) { placeQueued = true; requestAnimationFrame(showPlace); } };
-    addEventListener('scroll', later, { passive: true });
-    addEventListener('resize', later);
-    document.addEventListener('toggle', later, true);
     toc.addEventListener('click', e => {
-      const i = tocLinks.indexOf(e.target.closest('a'));
-      if (i < 0) return;
+      const a = e.target.closest('a[data-step]');
+      if (!a) return;
       e.preventDefault();
-      tocSteps[i].open = true;
+      const step = $(`details.step[data-step="${a.dataset.step}"]`);
+      step.open = true;
       const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-      tocSteps[i].scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'auto' });
+      step.scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'auto' });
     });
-    showPlace();
   }
 
   // ------------------------------------------------------------------ images

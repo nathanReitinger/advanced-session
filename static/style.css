@@ -162,13 +162,11 @@ details[open] > summary > .chev { transform: rotate(180deg); }
 .me-tag span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 680px) { .wrap { padding-top: 64px; } }
 
-/* ---------- the timeline on the right: one dot per step, always in view ---------- */
+/* ---------- the timeline on the right: one dot per step, green once you are done with it ---------- */
 
 .toc { position: fixed; top: 50%; left: calc(50% + 438px); z-index: 20; transform: translateY(-50%); }
 .toc ol { position: relative; margin: 0; padding: 0; list-style: none; }
-.toc ol::before, .toc ol::after { content: ""; position: absolute; top: 12px; left: 11px; width: 2px; border-radius: 1px; }
-.toc ol::before { bottom: 12px; background: var(--border-strong); }
-.toc ol::after { height: var(--fill, 0px); background: var(--accent); transition: height .25s; }
+.toc ol::before { content: ""; position: absolute; top: 12px; bottom: 12px; left: 11px; width: 2px; border-radius: 1px; background: var(--border-strong); }
 .toc li + li { margin-top: 18px; }
 .toc a {
   position: relative; z-index: 1; display: flex; align-items: center; gap: 10px;
@@ -179,9 +177,12 @@ details[open] > summary > .chev { transform: rotate(180deg); }
   border-radius: 50%; background: var(--surface); font-size: 11.5px; font-weight: 700; transition: background .2s, border-color .2s, color .2s;
 }
 .toc-label { max-width: calc(50vw - 496px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.toc a:hover, .toc a.current { color: var(--text); }
-.toc a:hover .toc-dot, .toc a.passed .toc-dot { border-color: var(--accent); color: var(--accent); }
-.toc a.current .toc-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+.toc-dot .i { display: none; width: 14px; height: 14px; stroke: #fff; stroke-width: 3.2; }
+.toc a:hover { color: var(--text); }
+.toc a:hover .toc-dot { border-color: var(--accent); color: var(--accent); }
+.toc a.done .toc-dot { background: var(--ok); border-color: var(--ok); }
+.toc a.done .toc-num { display: none; }
+.toc a.done .toc-dot .i { display: block; }
 @media (max-width: 1319px) {  /* no room beside the page for the titles: dots only, title on hover */
   .toc-label {
     position: absolute; top: 50%; right: calc(100% + 8px); max-width: none; padding: 0 9px; border-radius: 7px;
@@ -191,7 +192,7 @@ details[open] > summary > .chev { transform: rotate(180deg); }
   .toc a:hover .toc-label, .toc a:focus-visible .toc-label { opacity: 1; }
 }
 @media (max-width: 959px) { .toc { display: none; } }   /* no room beside the page at all */
-@media (prefers-reduced-motion: reduce) { .toc ol::after, .toc-dot, .toc-label { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .toc-dot, .toc-label { transition: none; } }
 
 /* ---------- who am I ---------- */
 
