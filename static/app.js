@@ -200,6 +200,9 @@
 
     let version = 0;
     return {
+      // True once the database has refused this tab's "here" mark, which the current rules always
+      // allow: the rules pasted into Firebase are an older version.
+      rulesOutdated: () => refused,
       async instructorCheck(password) {
         await ready;
         await fb.set(fb.ref(db, `instructor/${CFG.room}`), instructorMark(password));
@@ -579,7 +582,10 @@
         showTeacher();
         $('#clear-all').focus();
       } catch {
-        say(problem, 'Wrong password.');
+        say(problem, backend.rulesOutdated()
+          ? "The password can't be checked yet: Firebase still has the old database rules. "
+            + 'Paste site/firebase-rules.json into Realtime Database, Rules, and click Publish.'
+          : 'Wrong password.');
       } finally {
         button.disabled = false;
       }
