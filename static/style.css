@@ -232,7 +232,6 @@ details[open] > summary > .chev { transform: rotate(180deg); }
 .foot { margin: 40px 0 0; text-align: center; }
 .link { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .link:hover { color: var(--accent); }
-.whoami-alt { display: block; margin: 16px auto 0; }
 .instructor { z-index: 70; }
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .signed-in { margin: 0 0 4px; }
