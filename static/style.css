@@ -285,6 +285,9 @@ html[data-theme="dark"] .when-light, html:not([data-theme="dark"]) .when-dark { 
 .extra-what { flex: 1; color: var(--muted); }
 .extra-body { padding: 0 16px 16px; }
 .extra-body > .step:first-child { margin-top: 0; }
+.extra-info > .step-body { padding: 0 20px 22px; }
+/* a page shown inside this one (an <iframe> in the README) */
+.embed { display: block; width: 100%; height: min(75vh, 720px); margin: 14px 0 4px; border: 1px solid var(--border-strong); border-radius: 12px; background: #fff; }
 
 /* ---------- who am I ---------- */
 

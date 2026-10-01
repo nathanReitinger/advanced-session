@@ -606,9 +606,9 @@
 
   // ------------------------------------------------------------------ images
 
-  // Screenshots load only when their dropdown is opened.
+  // Screenshots, and pages shown inside this one, load only when their dropdown is opened.
   function loadImages(root) {
-    $$('img[data-src]', root).forEach(img => {
+    $$('img[data-src], iframe[data-src]', root).forEach(img => {
       if (img.closest('details:not([open])')) return;
       img.src = img.dataset.src;
       img.removeAttribute('data-src');
