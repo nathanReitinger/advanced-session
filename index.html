@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[advanced session]</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234E2A84'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="static/style.css?v=98e0c6fd44">
+<link rel="stylesheet" href="static/style.css?v=00469fdcb8">
 <script>/* before the page draws: "Who am I?" for anyone who has not checked in on this browser,
    and this reader's text size, contrast and dark mode */
 (function (h) {
@@ -699,21 +699,21 @@
 <li>Check on it until it is gone from the list: PD means waiting in line, R means running.</li>
 <li>Read the answer. A table naming a GPU, such as NVIDIA A100, means you got one.</li>
 </ol>
-<div class="code"><span class="code-tag">terminal</span><pre>$ ssh abc1234@login.quest.northwestern.edu
-[abc1234@quser31 ~]$ sbatch gpu_check.sh
-Submitted batch job 4839201
-[abc1234@quser31 ~]$ squeue -u $USER
-  JOBID PARTITION     NAME     USER ST   TIME  NODES NODELIST(REASON)
-4839201    gengpu gpu_chec  abc1234  R   0:04      1 qgpu2008
-[abc1234@quser31 ~]$ cat gpu_check_4839201.out
-==========================================
-Job ran on machine: qgpu2008
-==========================================
+<div class="code"><span class="code-tag">terminal</span><pre><span class="t-prompt">$ </span><span class="t-cmd">ssh</span> abc1234@login.quest.northwestern.edu
+<span class="t-prompt">[abc1234@quser31 ~]$ </span><span class="t-cmd">sbatch</span> gpu_check.sh
+<span class="t-out">Submitted batch job 4839201</span>
+<span class="t-prompt">[abc1234@quser31 ~]$ </span><span class="t-cmd">squeue</span> <span class="t-flag">-u</span> <span class="t-var">$USER</span>
+<span class="t-out">  JOBID PARTITION     NAME     USER ST   TIME  NODES NODELIST(REASON)</span>
+<span class="t-out">4839201    gengpu gpu_chec  abc1234  R   0:04      1 qgpu2008</span>
+<span class="t-prompt">[abc1234@quser31 ~]$ </span><span class="t-cmd">cat</span> gpu_check_4839201.out
+<span class="t-out">==========================================</span>
+<span class="t-out">Job ran on machine: qgpu2008</span>
+<span class="t-out">==========================================</span>
 
---- Does this machine see a GPU? ---
-| NVIDIA-SMI 550.54.15     Driver Version: 550.54.15     CUDA Version: 12.4 |
-|   0  NVIDIA A100-SXM4-80GB        On  |   00000000:31:00.0 Off |       0 |
-| N/A   31C    P0     61W /  400W |      1MiB /  81920MiB |      0%  Default |</pre></div>
+<span class="t-out">--- Does this machine see a GPU? ---</span>
+<span class="t-out">| NVIDIA-SMI 550.54.15     Driver Version: 550.54.15     CUDA Version: 12.4 |</span>
+<span class="t-out">|   0  NVIDIA A100-SXM4-80GB        On  |   00000000:31:00.0 Off |       0 |</span>
+<span class="t-out">| N/A   31C    P0     61W /  400W |      1MiB /  81920MiB |      0%  Default |</span></pre></div>
 </div>
       </details>
       
@@ -722,35 +722,82 @@ Job ran on machine: qgpu2008
       <details class="part note">
         <summary><span class="p-title">Example: a script that asks for a GPU</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body md"><p>Save this on the cluster as gpu_check.sh, and change pXXXXX to your allocation.</p>
-<div class="code"><span class="code-tag">gpu_check.sh</span><pre>#!/bin/bash
-# ============================================================
-#  A tiny job that just asks: &quot;Do I have a GPU?&quot;
-#  Everything starting with #SBATCH is an instruction to Quest.
-#  Everything starting with plain # is a note to you (ignored).
-# ============================================================
+<div class="code"><span class="code-tag">gpu_check.sh</span><pre><span class="t-dir">#!/bin/bash</span>
+<span class="t-com"># ============================================================</span>
+<span class="t-com">#  A tiny job that just asks: &quot;Do I have a GPU?&quot;</span>
+<span class="t-com">#  Everything starting with #SBATCH is an instruction to Quest.</span>
+<span class="t-com">#  Everything starting with plain # is a note to you (ignored).</span>
+<span class="t-com"># ============================================================</span>
 
-#SBATCH --account=pXXXXX          # your allocation (looked up from Quest)
-#SBATCH --partition=gengpu        # the general-access GPU machines
-#SBATCH --gres=gpu:1              # &quot;give me 1 GPU&quot;
-#SBATCH --nodes=1                 # 1 computer
-#SBATCH --ntasks=1                # running 1 thing
-#SBATCH --cpus-per-task=1         # 1 CPU core alongside the GPU
-#SBATCH --mem=8G                  # 8 gigabytes of memory
-#SBATCH --time=00:05:00           # 5 minutes, max. Then Quest kills it.
-#SBATCH --job-name=gpu_check
-#SBATCH --output=gpu_check_%j.out # where the results get written (%j = job number)
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--account=pXXXXX</span><span class="t-com">          # your allocation (looked up from Quest)</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--partition=gengpu</span><span class="t-com">        # the general-access GPU machines</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--gres=gpu:1</span><span class="t-com">              # &quot;give me 1 GPU&quot;</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--nodes=1</span><span class="t-com">                 # 1 computer</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--ntasks=1</span><span class="t-com">                # running 1 thing</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--cpus-per-task=1</span><span class="t-com">         # 1 CPU core alongside the GPU</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--mem=8G</span><span class="t-com">                  # 8 gigabytes of memory</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--time=00:05:00</span><span class="t-com">           # 5 minutes, max. Then Quest kills it.</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--job-name=gpu_check</span>
+<span class="t-dir">#SBATCH</span> <span class="t-flag">--output=gpu_check_%j.out</span><span class="t-com"> # where the results get written (%j = job number)</span>
 
-echo &quot;==========================================&quot;
-echo &quot;Job ran on machine: $(hostname)&quot;
-echo &quot;Started at: $(date)&quot;
-echo &quot;==========================================&quot;
-echo &quot;&quot;
+<span class="t-cmd">echo</span> <span class="t-str">&quot;==========================================&quot;</span>
+<span class="t-cmd">echo</span> <span class="t-str">&quot;Job ran on machine: $(hostname)&quot;</span>
+<span class="t-cmd">echo</span> <span class="t-str">&quot;Started at: $(date)&quot;</span>
+<span class="t-cmd">echo</span> <span class="t-str">&quot;==========================================&quot;</span>
+<span class="t-cmd">echo</span> <span class="t-str">&quot;&quot;</span>
 
-echo &quot;--- Does this machine see a GPU? ---&quot;
-nvidia-smi
+<span class="t-cmd">echo</span> <span class="t-str">&quot;--- Does this machine see a GPU? ---&quot;</span>
+<span class="t-cmd">nvidia-smi</span>
 
-echo &quot;&quot;
-echo &quot;--- Finished at: $(date) ---&quot;</pre></div>
+<span class="t-cmd">echo</span> <span class="t-str">&quot;&quot;</span>
+<span class="t-cmd">echo</span> <span class="t-str">&quot;--- Finished at: $(date) ---&quot;</span></pre></div>
+</div>
+      </details>
+      
+      
+      
+      <details class="part note">
+        <summary><span class="p-title">Example: the same check, as a Python program</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p>The same question, asked by a short Python program. Save it on your laptop as gpu_check.py, copy it to the cluster, ask for a GPU machine, then run <strong>python3 gpu_check.py</strong> there.</p>
+<div class="split"><div class="code"><span class="code-tag">gpu_check.py</span><pre><span class="t-com"># gpu_check.py: is there a GPU here?</span>
+<span class="t-com"># Run it with: python3 gpu_check.py</span>
+<span class="t-kw">import</span> shutil
+<span class="t-kw">import</span> socket
+<span class="t-kw">import</span> subprocess
+<span class="t-kw">from</span> datetime <span class="t-kw">import</span> datetime
+
+<span class="t-fn">print</span>(<span class="t-str">&quot;Machine:&quot;</span>, socket.<span class="t-fn">gethostname</span>())
+<span class="t-fn">print</span>(<span class="t-str">&quot;Started:&quot;</span>, datetime.<span class="t-fn">now</span>())
+
+<span class="t-kw">if</span> shutil.<span class="t-fn">which</span>(<span class="t-str">&quot;nvidia-smi&quot;</span>) <span class="t-kw">is</span> <span class="t-kw">None</span>:
+    <span class="t-fn">print</span>(<span class="t-str">&quot;No GPU here (no nvidia-smi).&quot;</span>)
+<span class="t-kw">else</span>:
+    gpu = subprocess.<span class="t-fn">check_output</span>(
+        [<span class="t-str">&quot;nvidia-smi&quot;</span>,
+         <span class="t-str">&quot;--query-gpu=name,memory.total&quot;</span>,
+         <span class="t-str">&quot;--format=csv,noheader&quot;</span>],
+        universal_newlines=<span class="t-kw">True</span>)
+    <span class="t-fn">print</span>(<span class="t-str">&quot;GPU:&quot;</span>, gpu.<span class="t-fn">strip</span>())
+
+<span class="t-fn">print</span>(<span class="t-str">&quot;Finished:&quot;</span>, datetime.<span class="t-fn">now</span>())</pre></div>
+<div class="code"><span class="code-tag">terminal</span><pre><span class="t-com"># on your Mac: copy the program to Quest</span>
+<span class="t-prompt">$ </span><span class="t-cmd">scp</span> gpu_check.py \
+    abc1234@login.quest.northwestern.edu:
+<span class="t-prompt">$ </span><span class="t-cmd">ssh</span> abc1234@login.quest.northwestern.edu
+
+<span class="t-com"># on Quest: ask for a GPU machine</span>
+<span class="t-prompt">$ </span><span class="t-cmd">srun</span> <span class="t-flag">--account=pXXXXX</span> <span class="t-flag">--partition=gengpu</span> \
+    <span class="t-flag">--gres=gpu:1</span> <span class="t-flag">--mem=8G</span> <span class="t-flag">--time=00:10:00</span> \
+    <span class="t-flag">--pty</span> bash
+
+<span class="t-com"># on the GPU machine: run the program</span>
+<span class="t-prompt">$ </span><span class="t-cmd">python3</span> gpu_check.py
+<span class="t-out">Machine: qgpu2008</span>
+<span class="t-out">Started: 2026-10-01 10:42:07.311402</span>
+<span class="t-out">GPU: NVIDIA A100-SXM4-80GB, 81920 MiB</span>
+<span class="t-out">Finished: 2026-10-01 10:42:08.026117</span>
+<span class="t-prompt">$ </span><span class="t-cmd">exit</span></pre></div>
+</div>
 </div>
       </details>
       
@@ -821,6 +868,6 @@ echo &quot;--- Finished at: $(date) ---&quot;</pre></div>
 <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
 <script>window.WORKSHOP = {"firebase": {"apiKey": "AIzaSyBnbCFSODOD29WBmHtu_8E5MhXR4-OMYbQ", "appId": "1:107931725699:web:18faae68813b8fdcba90b6", "authDomain": "advanced-session.firebaseapp.com", "databaseURL": "https://advanced-session-default-rtdb.firebaseio.com", "messagingSenderId": "107931725699", "projectId": "advanced-session", "storageBucket": "advanced-session.firebasestorage.app"}, "firebaseSdk": "https://www.gstatic.com/firebasejs/12.19.0", "room": "advanced-session", "steps": [{"done": "step-0:done", "id": "step-0", "num": "0", "verify": []}, {"done": "step-1:done", "id": "step-1", "num": "1", "verify": ["step-1:verify-1"]}, {"done": "step-2:done", "id": "step-2", "num": "2", "verify": ["step-2:verify-1"]}, {"done": "step-3:done", "id": "step-3", "num": "3", "verify": []}, {"done": "step-4:done", "id": "step-4", "num": "4", "verify": []}, {"done": "step-n:done", "id": "step-n", "num": "n", "verify": ["step-n:verify-1", "step-n:verify-2"]}], "tokenKey": "ws.advanced-session.token"};</script>
-<script src="static/app.js?v=98e0c6fd44"></script>
+<script src="static/app.js?v=00469fdcb8"></script>
 </body>
 </html>

@@ -28,6 +28,8 @@
   --improve-hover: #ffe3c2;
   --error: #b4232a;
   --shadow: rgba(30, 10, 60, .08);
+  --hl-cmd: #0550ae; --hl-flag: #953800; --hl-str: #0a6b2d; --hl-var: #8250df; --hl-com: #6e7781;
+  --hl-prompt: #8250df; --hl-out: #57606a; --hl-kw: #cf222e; --hl-num: #0550ae;
   --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -43,6 +45,8 @@ html[data-theme="dark"] {
   --verify-bar: #f2555a; --on-verify: #1a0506;
   --improve-bar: #f59a45; --improve-bg: #35261a; --improve-border: #6e4a24; --improve-hover: #412f1f;
   --error: #ff8a8f; --shadow: rgba(0, 0, 0, .45);
+  --hl-cmd: #79c0ff; --hl-flag: #ffa657; --hl-str: #7ee787; --hl-var: #d2a8ff; --hl-com: #8b949e;
+  --hl-prompt: #d2a8ff; --hl-out: #a5aab3; --hl-kw: #ff7b72; --hl-num: #79c0ff;
 }
 
 /* high contrast (the half-circle button): black on white, with colours that stay apart for
@@ -56,6 +60,8 @@ html[data-contrast="high"] {
   --verify-bar: #d55e00; --on-verify: #000000;
   --improve-bar: #e69f00; --improve-bg: #fff4d6; --improve-border: #000000; --improve-hover: #ffecb8;
   --error: #a30000;
+  --hl-cmd: #0050a0; --hl-flag: #a14400; --hl-str: #006b4f; --hl-var: #7a3d8c; --hl-com: #444444;
+  --hl-prompt: #000000; --hl-out: #1f1f1f; --hl-kw: #a8226b; --hl-num: #0050a0;
 }
 html[data-theme="dark"][data-contrast="high"] {
   --bg: #000000; --surface: #000000; --text: #ffffff; --muted: #e6e6e6;
@@ -66,6 +72,8 @@ html[data-theme="dark"][data-contrast="high"] {
   --verify-bar: #ff8a3d; --on-verify: #000000;
   --improve-bar: #f0e442; --improve-bg: #1f1c00; --improve-border: #f0e442; --improve-hover: #2b2700;
   --error: #ff9e9e;
+  --hl-cmd: #56b4e9; --hl-flag: #e69f00; --hl-str: #2ee6a6; --hl-var: #f0a6d0; --hl-com: #cfcfcf;
+  --hl-prompt: #ffffff; --hl-out: #e6e6e6; --hl-kw: #f0a6d0; --hl-num: #56b4e9;
 }
 html[data-contrast="high"] :focus-visible { outline-width: 3px; }
 
@@ -118,6 +126,24 @@ a { color: var(--accent); text-underline-offset: 2px; overflow-wrap: anywhere; }
 .code { margin: 14px 0; padding: 9px 14px 12px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px; }
 .code-tag { display: inline-block; margin-bottom: 6px; padding: 0 7px; border-radius: 6px; background: var(--cell); color: var(--muted); font: 600 .75em/1.6 var(--mono); }
 .code pre { margin: 0; overflow-x: auto; font: .8125em/1.55 var(--mono); }
+/* two code blocks in a row: side by side (one above the other on narrow screens) */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; align-items: start; }
+.split > .code { min-width: 0; margin: 0; }
+.split .code pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .75em; }
+@media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
+/* code colours: the command, its options, text in quotes, $VARIABLES, notes, the $ prompt, output */
+.t-cmd, .t-fn { color: var(--hl-cmd); }
+.t-cmd { font-weight: 700; }
+.t-flag, .t-dir { color: var(--hl-flag); }
+.t-dir { font-weight: 700; }
+.t-str { color: var(--hl-str); }
+.t-var { color: var(--hl-var); }
+.t-com { color: var(--hl-com); font-style: italic; }
+.t-prompt { color: var(--hl-prompt); user-select: none; -webkit-user-select: none; }   /* copy the command, not the $ */
+.t-out { color: var(--hl-out); }
+.t-kw, .t-op { color: var(--hl-kw); }
+.t-kw { font-weight: 700; }
+.t-num { color: var(--hl-num); }
 .md h4 { margin: 1.5em 0 .3em; font-size: 1.0625em; }
 .step-body > .md > h4:first-child { margin-top: 24px; }
 .p-tag {
