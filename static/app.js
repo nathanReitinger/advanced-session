@@ -617,6 +617,38 @@
     toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
   }
 
+  // ------------------------------------------------------------------ display
+
+  // Text size (A- / A+), high contrast (also colour-blind friendly) and dark mode, each reader's own,
+  // kept on this browser. The page's head applies them before it draws, so nothing flashes.
+  const SIZES = [0.875, 1, 1.125, 1.25, 1.5];
+  const root = document.documentElement;
+  let display = {};
+  try { display = JSON.parse(saved.get('ws.display') || '{}') || {}; } catch { display = {}; }
+
+  function showDisplay() {
+    const size = SIZES.includes(display.size) ? display.size : 1;
+    if (size === 1) root.style.removeProperty('--scale'); else root.style.setProperty('--scale', size);
+    if (display.dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+    if (display.contrast) root.setAttribute('data-contrast', 'high'); else root.removeAttribute('data-contrast');
+    $('.disp[data-size="-1"]').disabled = size === SIZES[0];
+    $('.disp[data-size="1"]').disabled = size === SIZES[SIZES.length - 1];
+    $('.disp[data-contrast]').setAttribute('aria-pressed', String(Boolean(display.contrast)));
+    $('.disp[data-dark]').setAttribute('aria-pressed', String(Boolean(display.dark)));
+  }
+  function changeDisplay(change) {
+    Object.assign(display, change);
+    saved.set('ws.display', JSON.stringify(display));
+    showDisplay();
+  }
+  $$('.disp[data-size]').forEach(button => button.addEventListener('click', () => {
+    const at = SIZES.indexOf(SIZES.includes(display.size) ? display.size : 1);
+    changeDisplay({ size: SIZES[Math.min(SIZES.length - 1, Math.max(0, at + Number(button.dataset.size)))] });
+  }));
+  $('.disp[data-contrast]').addEventListener('click', () => changeDisplay({ contrast: !display.contrast }));
+  $('.disp[data-dark]').addEventListener('click', () => changeDisplay({ dark: !display.dark }));
+  showDisplay();
+
   // ------------------------------------------------------------------ start
 
   async function start() {
