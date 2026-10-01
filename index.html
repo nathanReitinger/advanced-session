@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[advanced session]</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234E2A84'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="static/style.css?v=14406d7e08">
+<script>/* show "Who am I?" straight away to anyone who has not checked in on this browser */
+try { if (!localStorage.getItem("ws.advanced-session.token")) document.documentElement.classList.add('need-name'); }
+catch (e) { document.documentElement.classList.add('need-name'); }</script>
+</head>
+<body>
+
+<div id="me-tag" class="me-tag" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span></span></div>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>[advanced session]</h1>
+    <div class="md"><p>A 1-hour session; we may not cover all of the material. We will try to cover:</p>
+<ul>
+<li>scraping data</li>
+<li>building an interactive dashboard to visualize your data</li>
+<li>human-based verification</li>
+<li>running stats (stata, R, Python...)</li>
+</ul>
+<p><em>You do not need to write code.</em></p>
+</div>
+  </section>
+
+  
+  
+  <section class="card" id="before-we-start">
+    <h2>Before we start</h2>
+    <div class="md"><p>Your data for this part of the workshop:</p>
+<ul>
+<li><strong>Opinion archive</strong> —</li>
+</ul>
+<p><a href="https://nathanReitinger.github.io/cda230-opinion-archive/" target="_blank" rel="noopener">https://nathanReitinger.github.io/cda230-opinion-archive/</a></p>
+<p><em>The website was made for this workshop.</em></p>
+</div>
+  </section>
+  
+  
+  
+  <section class="card" id="the-shape-of-the-hour">
+    <h2>The shape of the hour</h2>
+    <div class="md"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Collect the opinions</strong></td>
+<td>PDF collection</td>
+</tr>
+<tr>
+<td><strong>Visualize information</strong></td>
+<td>A dashboard living in your browser</td>
+</tr>
+<tr>
+<td><strong>Verify party names</strong></td>
+<td>A human-verified task</td>
+</tr>
+<tr>
+<td><strong>Analysis</strong></td>
+<td>Stata or Python or R or Claude itself</td>
+</tr>
+</tbody>
+</table>
+</div>
+  </section>
+  
+  
+  
+  
+  <details class="step" id="step-0" data-step="step-0">
+    <summary>
+      <span class="mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span class="s-title">Step 0 — Setup</span>
+      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+
+    <div class="step-body">
+      
+      
+      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Set expectations for Claude: what you can or cannot do (e.g., you can or cannot run code), if you want data available offline, if you want critiques of your questions or want Claude to always provide critiques of its own work. Set a new folder in Claude Code (optional).</div>
+
+      
+      
+      
+      <details class="part prompts">
+        <summary><span class="p-title">Prompts</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><div class="prompt">
+<p><span class="p-tag">prompt</span>I can code. Give me Python (C, R, Ruby, Go...) files when you help me.</p>
+</div>
+<p>&lt;&gt;</p>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>I have no idea what code is. I know almost nothing about computers. I can click buttons. Help me with this task, but keep that in mind.</p>
+</div>
+<p>&lt;&gt;</p>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>I want you to keep detailed logs of everything you do. I want to inspect this information later so that I can make sure it was correct. <strong>&gt;&gt;&gt;&gt;&gt;&gt; this slows Claude down</strong></p>
+</div>
+<p>&lt;&gt;</p>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>Ask me questions when you are stuck or if you need a clarification. <strong>&gt;&gt;&gt;&gt;&gt;&gt; this slows Claude down</strong></p>
+</div>
+</div>
+      </details>
+      
+      
+      
+      <details class="part success">
+        <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p><img class="shot" data-src="img/79116aac4258f5d3.webp" alt="new-folder-success" width="1600" height="1191"></p>
+<p><img class="shot" data-src="img/550716e673e83ea1.webp" alt="new-folder-success" width="1600" height="1196"></p>
+</div>
+      </details>
+      
+      
+
+      <div class="finish">
+        <label class="tick big"><input type="checkbox" data-item="step-0:done"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done with Step 0</span></label>
+        
+      </div>
+
+      <div class="room">
+        <div class="room-head"><span class="room-title">Who's done</span><span class="room-pct">0% done</span></div>
+        <div class="grid" role="list" aria-label="Who is done with Step 0"></div>
+      </div>
+    </div>
+  </details>
+  
+  
+  
+  
+  <details class="step" id="step-1" data-step="step-1">
+    <summary>
+      <span class="mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span class="s-title">Step 1 — Collect the opinions</span>
+      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+
+    <div class="step-body">
+      
+      
+      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Get all PDFs from this website and put them in a folder called "data": <a href="https://nathanreitinger.github.io/cda230-opinion-archive/" target="_blank" rel="noopener">https://nathanReitinger.github.io/cda230-opinion-archive/</a>.</div>
+
+      
+      
+      
+      <details class="part tips">
+        <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><ul>
+<li>A sample command is all that is needed</li>
+</ul>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>Get all PDFs from this website (<a href="https://nathanreitinger.github.io/cda230-opinion-archive" target="_blank" rel="noopener">https://nathanreitinger.github.io/cda230-opinion-archive</a>) and put them in a folder called &quot;data&quot; that I can see. Double-check that you have everything. Keep logs.</p>
+</div>
+</div>
+      </details>
+      
+      
+      
+      <details class="part verify">
+        <summary><span class="p-title"><strong>Verify:</strong> What did you get?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body">
+          <div class="md"><ul>
+<li>what was on the website (manual: how many files should there be)</li>
+<li>is anything facially wrong with the files you downloaded (manual: do they look the same as the ones on the website)</li>
+<li>how many files did you get (ask <span class="prompt-inline"><span class="p-tag">prompt</span>summarize this information for me in chat; what did we get</span>)</li>
+</ul>
+</div>
+          
+          <label class="tick"><input type="checkbox" data-item="step-1:verify-1"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done verifying</span></label>
+          
+        </div>
+      </details>
+
+      
+      
+      
+      <details class="part success">
+        <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p><img class="shot" data-src="img/0a2c93f9f65e7449.webp" alt="data-download-succcess" width="1600" height="881"></p>
+</div>
+      </details>
+      
+      
+      
+      <details class="part note">
+        <summary><span class="p-title">A note on scraping data</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><ul>
+<li>check for robots.txt (rules for scrapers)</li>
+<li>Claude may try to slow a scrape down to prevent server overload; there are workarounds (Selenium), but most involve custom scraping code that you would need to build</li>
+<li>If you are heavily or routinely scraping a website, it might make sense to reach out to the website's owners and ask them about preferred procedures</li>
+<li>Many companies that provide access to valuable information (e.g., Westlaw or Lexis) heavily restrict scraping with technical blocks and contractual terms concerning text and data mining. When in doubt, check terms first</li>
+</ul>
+</div>
+      </details>
+      
+      
+
+      <div class="finish">
+        <label class="tick big"><input type="checkbox" data-item="step-1:done"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done with Step 1</span></label>
+        <p class="gate-hint">Tick “I'm done verifying” first.</p>
+      </div>
+
+      <div class="room">
+        <div class="room-head"><span class="room-title">Who's done</span><span class="room-pct">0% done</span></div>
+        <div class="grid" role="list" aria-label="Who is done with Step 1"></div>
+      </div>
+    </div>
+  </details>
+  
+  
+  
+  
+  <details class="step" id="step-2" data-step="step-2">
+    <summary>
+      <span class="mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span class="s-title">Step 2 — Investigating the data</span>
+      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+
+    <div class="step-body">
+      
+      
+      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Build an interactive data dashboard that will visualize the data you have. Make sure this website lives locally (inside a folder).</div>
+
+      
+      
+      
+      <details class="part tips">
+        <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p>Think about what you want! What should you focus on (some of this may happen automatically):</p>
+<ul>
+<li>How many cases</li>
+<li>Which plaintiffs</li>
+<li>Which defendants</li>
+<li>What years (histogram)</li>
+<li>Pages of text (per opinion, overall)</li>
+<li>Which courts are represented (specific court, level, circuits)</li>
+</ul>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>Build me a single self-contained data dashboard based on the data folder. I need it to be local. I want:</p>
+<ul>
+<li>how many opinions, how many distinct cases</li>
+<li>a histogram of opinions by year</li>
+<li>the distribution of page counts</li>
+<li>the defendants and plaintiffs that appear in the dataset</li>
+</ul>
+</div>
+</div>
+      </details>
+      
+      
+      
+      <details class="part improve">
+        <summary><span class="p-title"><strong>Improvements:</strong> What could be better?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body">
+          <div class="md"><ul>
+<li>more aggregate information</li>
+<li>a more interactive website</li>
+<li>different color theme (fonts, front-facing quibbles)</li>
+<li>different stats (mean opinions per month)</li>
+<li>more interpretation of the information (summaries)</li>
+</ul>
+</div>
+          
+        </div>
+      </details>
+
+      
+      
+      
+      <details class="part verify">
+        <summary><span class="p-title"><strong>Verify:</strong> What did you get?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body">
+          <div class="md"><ul>
+<li>are the numbers correct
+<ul>
+<li>correct number of cases represented</li>
+<li>are the years right
+<ul>
+<li>manually verify by looking at the actual PDFs for comparison</li>
+</ul>
+</li>
+<li>if applicable, check the page counts for one of the cases</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          <label class="tick"><input type="checkbox" data-item="step-2:verify-1"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done verifying</span></label>
+          
+        </div>
+      </details>
+
+      
+      
+      
+      <details class="part success">
+        <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p><img class="shot" data-src="img/552fb9e65a5efee1.webp" alt="dashboard-success" width="1600" height="1626"></p>
+<ul>
+<li>Data dashboards like this one, and most websites built fully with LLMs, have certain tells signaling AI creation. That may be fine for your purposes, but something to be aware of.</li>
+</ul>
+</div>
+      </details>
+      
+      
+
+      <div class="finish">
+        <label class="tick big"><input type="checkbox" data-item="step-2:done"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done with Step 2</span></label>
+        <p class="gate-hint">Tick “I'm done verifying” first.</p>
+      </div>
+
+      <div class="room">
+        <div class="room-head"><span class="room-title">Who's done</span><span class="room-pct">0% done</span></div>
+        <div class="grid" role="list" aria-label="Who is done with Step 2"></div>
+      </div>
+    </div>
+  </details>
+  
+  
+  
+  
+  <details class="step" id="step-3" data-step="step-3">
+    <summary>
+      <span class="mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span class="s-title">Step 3 — Explicit verification</span>
+      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+
+    <div class="step-body">
+      
+      
+      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Check that the dashboard correctly displays party names.</div>
+
+      
+      
+      
+      <details class="part tips">
+        <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p>A decision about the party name may be a computable task, if the data is found online in a machine-readable format. However, if the party name is pulled from a PDF, then it might have errors.</p>
+<ul>
+<li>This dataset is small, so we might be able to check all PDFs manually, but with larger datasets it might be better to check a random 10% and only keep the AI-assumed names if there is an agreement between what you would decide and what the AI decided.</li>
+</ul>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>Now I want to check that the dashboard correctly logged party names. I want help confirming that the PDFs match what you decided.</p>
+<p>I need some type of coding website, integrated into the dashboard, where I go through each of the labels you decided on for the names of the parties and match them with what is actually in the PDF.</p>
+<p>I need this website to be persistent so that I can close it and come back to finish the job later.</p>
+</div>
+<ul>
+<li>
+<p>In your own projects, make sure to double-check anything that is not computable, and if you don't know where that line is, ask:</p>
+<ul>
+<li><span class="prompt-inline"><span class="p-tag">prompt</span>check all of your work, in particular, what decisions did you make in your response that were not directly computable or involved higher-level thinking</span></li>
+</ul>
+</li>
+<li>
+<p>If your project relies on an area that has this type of non-computable inference, check the work.</p>
+</li>
+</ul>
+</div>
+      </details>
+      
+      
+      
+      <details class="part success">
+        <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p><img class="shot" data-src="img/773315aa83284528.webp" alt="coding-success" width="1600" height="1115"></p>
+</div>
+      </details>
+      
+      
+
+      <div class="finish">
+        <label class="tick big"><input type="checkbox" data-item="step-3:done"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done with Step 3</span></label>
+        
+      </div>
+
+      <div class="room">
+        <div class="room-head"><span class="room-title">Who's done</span><span class="room-pct">0% done</span></div>
+        <div class="grid" role="list" aria-label="Who is done with Step 3"></div>
+      </div>
+    </div>
+  </details>
+  
+  
+  
+  
+  <details class="step" id="step-4" data-step="step-4">
+    <summary>
+      <span class="mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span class="s-title">Step 4 — Analysis</span>
+      <span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+
+    <div class="step-body">
+      
+      
+      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Do some companies show up as defendants more often than others?</div>
+
+      
+      
+      
+      <details class="part tips">
+        <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><ul>
+<li>
+<p>Do you have a statistical test in mind, or would you like to brainstorm ideas? If you do not pick something, Claude will make a guess (which might be wrong). Brainstorming (with Claude) before you run the test can be helpful.</p>
+</li>
+<li>
+<p>Do you want to produce figures for a paper or just visualize the results?</p>
+</li>
+</ul>
+<div class="prompt">
+<p><span class="p-tag">prompt</span>I want to know if some companies show up more often as a defendant than other companies?</p>
+<p>I want a Stata .do file to run this.</p>
+<p>Make sure you visualize these results in the dashboard.</p>
+</div>
+</div>
+      </details>
+      
+      
+      
+      <details class="part success">
+        <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <div class="part-body md"><p><img class="shot" data-src="img/f4f7628e1fa944c2.webp" alt="analysis-success-visual" width="1600" height="1381"></p>
+<img class="shot" data-src="img/df176cf9d9015138.webp" alt="analysis-stat-do-1" width="1266" height="1660" style="max-width:min(100%,633px)"></div>
+      </details>
+      
+      
+
+      <div class="finish">
+        <label class="tick big"><input type="checkbox" data-item="step-4:done"><span class="box"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>I'm done with Step 4</span></label>
+        
+      </div>
+
+      <div class="room">
+        <div class="room-head"><span class="room-title">Who's done</span><span class="room-pct">0% done</span></div>
+        <div class="grid" role="list" aria-label="Who is done with Step 4"></div>
+      </div>
+    </div>
+  </details>
+  
+  
+</main>
+
+<div id="whoami" class="whoami" hidden>
+  <form id="whoami-form" class="whoami-card" novalidate>
+    <h2>Who am I?</h2>
+    <input id="whoami-name" name="name" maxlength="60" autocomplete="name" placeholder="Your name" aria-label="Your name" spellcheck="false">
+    <p id="whoami-error" class="error" role="alert" hidden></p>
+    <button type="submit" class="primary">Start</button>
+  </form>
+</div>
+
+<div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+
+<script>window.WORKSHOP = {"firebase": {"apiKey": "AIzaSyBnbCFSODOD29WBmHtu_8E5MhXR4-OMYbQ", "appId": "1:107931725699:web:18faae68813b8fdcba90b6", "authDomain": "advanced-session.firebaseapp.com", "databaseURL": "https://advanced-session-default-rtdb.firebaseio.com", "messagingSenderId": "107931725699", "projectId": "advanced-session", "storageBucket": "advanced-session.firebasestorage.app"}, "firebaseSdk": "https://www.gstatic.com/firebasejs/12.19.0", "room": "advanced-session", "steps": [{"done": "step-0:done", "id": "step-0", "num": "0", "verify": []}, {"done": "step-1:done", "id": "step-1", "num": "1", "verify": ["step-1:verify-1"]}, {"done": "step-2:done", "id": "step-2", "num": "2", "verify": ["step-2:verify-1"]}, {"done": "step-3:done", "id": "step-3", "num": "3", "verify": []}, {"done": "step-4:done", "id": "step-4", "num": "4", "verify": []}], "tokenKey": "ws.advanced-session.token"};</script>
+<script src="static/app.js?v=14406d7e08"></script>
+</body>
+</html>
