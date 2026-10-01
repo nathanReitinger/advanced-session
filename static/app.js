@@ -333,9 +333,19 @@
 
   function openWhoami() {
     nameError.hidden = true;
+    $('#whoami-cancel').hidden = !me;   // already checked in: you may keep your name
     overlay.hidden = false;
     setTimeout(() => nameInput.focus(), 40);
   }
+  const closeWhoami = () => { if (me) overlay.hidden = true; };
+  $('#whoami-cancel').addEventListener('click', closeWhoami);
+  overlay.addEventListener('keydown', e => { if (e.key === 'Escape') closeWhoami(); });
+
+  // Your name, top right: click it to change it (or to reach the instructor's sign-in).
+  $('#me-tag').addEventListener('click', () => {
+    nameInput.value = me ? me.name : '';
+    openWhoami();
+  });
 
   function stale() {   // the room no longer knows us (check marks were cleared)
     token = null; me = null; mine = new Set();
@@ -350,7 +360,7 @@
     const tag = $('#me-tag');
     tag.hidden = !me;
     $('span', tag).textContent = me ? me.name : '';
-    tag.title = me ? `You checked in as ${me.name}` : '';
+    tag.title = me ? `You checked in as ${me.name}. Click to change.` : '';
   }
 
   $('#whoami-form').addEventListener('submit', async e => {

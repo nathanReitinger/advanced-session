@@ -216,8 +216,9 @@ html[data-theme="dark"] .when-light, html:not([data-theme="dark"]) .when-dark { 
   display: inline-flex; align-items: center; gap: 6px;
   max-width: min(300px, calc(100vw - 196px)); padding: 6px 13px 6px 10px; border-radius: 999px;
   background: var(--surface); border: 1px solid var(--border-strong); box-shadow: 0 4px 14px var(--shadow);
-  font-size: 14px; font-weight: 650;
+  color: var(--text); font: 650 14px/1.6 var(--font); cursor: pointer;
 }
+.me-tag:hover { border-color: var(--accent); }
 .me-tag .i { color: var(--accent); }
 .me-tag span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 680px) { .wrap { padding-top: 64px; } }
@@ -301,9 +302,9 @@ html[data-theme="dark"] .when-light, html:not([data-theme="dark"]) .when-dark { 
 
 /* ---------- instructor (GitHub Pages version) ---------- */
 
-.foot { margin: 40px 0 0; text-align: center; }
 .link { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: .875em; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .link:hover { color: var(--accent); }
+.whoami-links { display: flex; justify-content: center; gap: 22px; margin-top: 16px; }
 .instructor { z-index: 70; }
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .signed-in { margin: 0 0 4px; }

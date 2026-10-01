@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[advanced session]</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234E2A84'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="static/style.css?v=896d7d95c1">
+<link rel="stylesheet" href="static/style.css?v=02064dbb41">
 <script>/* before the page draws: "Who am I?" for anyone who has not checked in on this browser,
    and this reader's text size, contrast and dark mode */
 (function (h) {
@@ -30,7 +30,7 @@
     <button type="button" class="disp" data-contrast aria-pressed="false" aria-label="High contrast" title="High contrast (colorblind friendly)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="solid" d="M12 3a9 9 0 0 0 0 18z"/></svg></button>
     <button type="button" class="disp" data-dark aria-pressed="false" aria-label="Dark mode" title="Dark mode"><span class="when-light"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="when-dark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
   </div>
-  <div id="me-tag" class="me-tag" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span></span></div>
+  <button type="button" id="me-tag" class="me-tag" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span></span></button>
 </div>
 
 <main class="wrap">
@@ -584,7 +584,6 @@
   </details>
   
 
-  <footer class="foot"><button type="button" class="link" data-instructor>Instructor sign-in</button></footer>
 </main>
 
 <aside class="side">
@@ -613,6 +612,10 @@
     <input id="whoami-name" name="name" maxlength="60" autocomplete="name" placeholder="Your name" aria-label="Your name" spellcheck="false">
     <p id="whoami-error" class="error" role="alert" hidden></p>
     <button type="submit" class="primary">Start</button>
+    <div class="whoami-links">
+      <button type="button" id="whoami-cancel" class="link" hidden>Cancel</button>
+      <button type="button" class="link" data-instructor>Instructor</button>
+    </div>
   </form>
 </div>
 
@@ -639,6 +642,6 @@
 <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
 <script>window.WORKSHOP = {"firebase": {"apiKey": "AIzaSyBnbCFSODOD29WBmHtu_8E5MhXR4-OMYbQ", "appId": "1:107931725699:web:18faae68813b8fdcba90b6", "authDomain": "advanced-session.firebaseapp.com", "databaseURL": "https://advanced-session-default-rtdb.firebaseio.com", "messagingSenderId": "107931725699", "projectId": "advanced-session", "storageBucket": "advanced-session.firebasestorage.app"}, "firebaseSdk": "https://www.gstatic.com/firebasejs/12.19.0", "room": "advanced-session", "steps": [{"done": "step-0:done", "id": "step-0", "num": "0", "verify": []}, {"done": "step-1:done", "id": "step-1", "num": "1", "verify": ["step-1:verify-1"]}, {"done": "step-2:done", "id": "step-2", "num": "2", "verify": ["step-2:verify-1"]}, {"done": "step-3:done", "id": "step-3", "num": "3", "verify": []}, {"done": "step-4:done", "id": "step-4", "num": "4", "verify": []}, {"done": "step-n:done", "id": "step-n", "num": "n", "verify": ["step-n:verify-1", "step-n:verify-2"]}], "tokenKey": "ws.advanced-session.token"};</script>
-<script src="static/app.js?v=896d7d95c1"></script>
+<script src="static/app.js?v=02064dbb41"></script>
 </body>
 </html>
