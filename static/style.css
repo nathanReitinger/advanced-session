@@ -77,6 +77,13 @@ html[data-theme="dark"][data-contrast="high"] {
 }
 html[data-contrast="high"] :focus-visible { outline-width: 3px; }
 
+/* the n of "Step n", set the way LaTeX sets a variable (Computer Modern math italic, from KaTeX's fonts) */
+@font-face { font-family: "KaTeX_Math"; font-style: italic; font-weight: 400; font-display: swap;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/fonts/KaTeX_Math-Italic.woff2") format("woff2"); }
+@font-face { font-family: "KaTeX_Math"; font-style: italic; font-weight: 700; font-display: swap;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/fonts/KaTeX_Math-BoldItalic.woff2") format("woff2"); }
+.math { font-family: "KaTeX_Math", "Latin Modern Math", "STIX Two Math", "Cambria Math", serif; font-style: italic; font-size: 1.15em; line-height: 1; }
+
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html.need-name #whoami[hidden] { display: grid !important; }
