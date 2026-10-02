@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[advanced session]</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234E2A84'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="static/style.css?v=53694062b2">
+<link rel="stylesheet" href="static/style.css?v=f9f8ea07d0">
 <script>/* before the page draws: "Who am I?" for anyone who has not checked in on this browser,
    and this reader's text size, contrast and dark mode */
 (function (h) {
@@ -27,7 +27,7 @@
   <div class="display" role="group" aria-label="Display">
     <button type="button" class="disp" data-size="-1" aria-label="Smaller text" title="Smaller text">A−</button>
     <button type="button" class="disp" data-size="1" aria-label="Larger text" title="Larger text">A+</button>
-    <button type="button" class="disp" data-contrast aria-pressed="false" aria-label="High contrast" title="High contrast (colorblind friendly)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="solid" d="M12 3a9 9 0 0 0 0 18z"/></svg></button>
+    <button type="button" class="disp" data-contrast aria-pressed="false" aria-label="High contrast" title="High contrast (colorblind-friendly)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="solid" d="M12 3a9 9 0 0 0 0 18z"/></svg></button>
     <button type="button" class="disp" data-dark aria-pressed="false" aria-label="Dark mode" title="Dark mode"><span class="when-light"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="when-dark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
   </div>
   <button type="button" id="me-tag" class="me-tag" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span></span></button>
@@ -104,7 +104,7 @@
     <div class="step-body">
       
       
-      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Set expectations for Claude: what you can or cannot do (e.g., you can or cannot run code), if you want data available offline, if you want critiques of your questions or want Claude to always provide critiques of its own work. Set a new folder in Claude Code (optional).</div>
+      <div class="callout task" style="background:#f0f9f0; border-left:4px solid #4a9d5f; padding:0.75em 1em; margin:1em 0"><strong>Task:</strong> Set expectations for Claude: what you can or cannot do (e.g., you can or cannot run code), if you want data available offline, and if you want critiques of your questions or want Claude to always provide critiques of its own work. Set a new folder in Claude Code (optional).</div>
 
       
       
@@ -174,7 +174,7 @@
       <details class="part tips">
         <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body md"><ul>
-<li>A sample command is all that is needed</li>
+<li>A sample command is all that is needed.</li>
 </ul>
 <div class="prompt">
 <p><span class="p-tag">prompt</span>Get all PDFs from this website (<a href="https://nathanreitinger.github.io/cda230-opinion-archive" target="_blank" rel="noopener">https://nathanreitinger.github.io/cda230-opinion-archive</a>) and put them in a folder called &quot;data&quot; that I can see. Double-check that you have everything. Keep logs.</p>
@@ -188,9 +188,9 @@
         <summary><span class="p-title"><strong>Verify:</strong> What did you get?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body">
           <div class="md"><ul>
-<li>what was on the website (manual: how many files should there be)</li>
-<li>is anything facially wrong with the files you downloaded (manual: do they look the same as the ones on the website)</li>
-<li>how many files did you get (ask <span class="prompt-inline"><span class="p-tag">prompt</span>summarize this information for me in chat; what did we get</span>)</li>
+<li>what was on the website? (manual: how many files should there be?)</li>
+<li>is anything facially wrong with the files you downloaded? (manual: do they look the same as the ones on the website?)</li>
+<li>how many files did you get? (ask <span class="prompt-inline"><span class="p-tag">prompt</span>summarize this information for me in chat: what did we get?</span>)</li>
 </ul>
 </div>
           
@@ -204,7 +204,7 @@
       
       <details class="part success">
         <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
-        <div class="part-body md"><p><img class="shot" data-src="img/0a2c93f9f65e7449.webp" alt="data-download-succcess" width="1600" height="881"></p>
+        <div class="part-body md"><p><img class="shot" data-src="img/0a2c93f9f65e7449.webp" alt="data-download-success" width="1600" height="881"></p>
 </div>
       </details>
       
@@ -259,7 +259,7 @@
       
       <details class="part tips">
         <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
-        <div class="part-body md"><p>Think about what you want! What should you focus on (some of this may happen automatically):</p>
+        <div class="part-body md"><p>Think about what you want! What should you focus on? (Some of this may happen automatically.)</p>
 <ul>
 <li>How many cases</li>
 <li>Which plaintiffs</li>
@@ -288,7 +288,7 @@
           <div class="md"><ul>
 <li>more aggregate information</li>
 <li>a more interactive website</li>
-<li>different color theme (fonts, front-facing quibbles)</li>
+<li>a different color theme (fonts, front-facing quibbles)</li>
 <li>different stats (mean opinions per month)</li>
 <li>more interpretation of the information (summaries)</li>
 </ul>
@@ -304,10 +304,10 @@
         <summary><span class="p-title"><strong>Verify:</strong> What did you get?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body">
           <div class="md"><ul>
-<li>are the numbers correct
+<li>are the numbers correct?
 <ul>
 <li>correct number of cases represented</li>
-<li>are the years right
+<li>are the years right?
 <ul>
 <li>manually verify by looking at the actual PDFs for comparison</li>
 </ul>
@@ -330,7 +330,7 @@
         <summary><span class="p-title">What does success look like?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body md"><p><img class="shot" data-src="img/552fb9e65a5efee1.webp" alt="dashboard-success" width="1600" height="1626"></p>
 <ul>
-<li>Data dashboards like this one, and most websites built fully with LLMs, have certain tells signaling AI creation. That may be fine for your purposes, but something to be aware of.</li>
+<li>Data dashboards like this one, and most websites built fully with LLMs, have certain tells signaling AI creation. That may be fine for your purposes, but it is something to be aware of.</li>
 </ul>
 </div>
       </details>
@@ -375,7 +375,7 @@
         <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body md"><p>A decision about the party name may be a computable task, if the data is found online in a machine-readable format. However, if the party name is pulled from a PDF, then it might have errors.</p>
 <ul>
-<li>This dataset is small, so we might be able to check all PDFs manually, but with larger datasets it might be better to check a random 10% and only keep the AI-assumed names if there is an agreement between what you would decide and what the AI decided.</li>
+<li>This dataset is small, so we might be able to check all PDFs manually, but with larger datasets it might be better to check a random 10% and only keep the AI-assumed names if there is agreement between what you would decide and what the AI decided.</li>
 </ul>
 <div class="prompt">
 <p><span class="p-tag">prompt</span>Now I want to check that the dashboard correctly logged party names. I want help confirming that the PDFs match what you decided.</p>
@@ -386,7 +386,7 @@
 <li>
 <p>In your own projects, make sure to double-check anything that is not computable, and if you don't know where that line is, ask:</p>
 <ul>
-<li><span class="prompt-inline"><span class="p-tag">prompt</span>check all of your work, in particular, what decisions did you make in your response that were not directly computable or involved higher-level thinking</span></li>
+<li><span class="prompt-inline"><span class="p-tag">prompt</span>check all of your work; in particular, what decisions did you make in your response that were not directly computable or involved higher-level thinking?</span></li>
 </ul>
 </li>
 <li>
@@ -451,7 +451,7 @@
 </li>
 </ul>
 <div class="prompt">
-<p><span class="p-tag">prompt</span>I want to know if some companies show up more often as a defendant than other companies?</p>
+<p><span class="p-tag">prompt</span>I want to know if some companies show up more often as a defendant than other companies.</p>
 <p>I want a Stata .do file to run this.</p>
 <p>Make sure you visualize these results in the dashboard.</p>
 </div>
@@ -514,7 +514,7 @@
       <details class="part tips">
         <summary><span class="p-title">Tips</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body md"><ul>
-<li>Break the task up into parts and verify each part. The frist part is whether you've downloaded all of the new data.</li>
+<li>Break the task up into parts and verify each part. The first part is whether you've downloaded all of the new data.</li>
 </ul>
 <div class="prompt">
 <p><span class="p-tag">prompt</span>We are adding in information about the plaintiffs and defendants. A new dataset is at <a href="https://nathanReitinger.github.io/harborline-registry/" target="_blank" rel="noopener">https://nathanReitinger.github.io/harborline-registry/</a>.</p>
@@ -530,7 +530,7 @@
         <summary><span class="p-title"><strong>Verify:</strong> Did you capture all of the data?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body">
           <div class="md"><ul>
-<li>The second part is what did you match on? If a defendant company has a different name than that found in the registry, how will Claude handle that?</li>
+<li>The second part is: what did you match on? If a defendant company has a different name than that found in the registry, how will Claude handle that?</li>
 </ul>
 </div>
           
@@ -543,10 +543,10 @@
       
       
       <details class="part verify">
-        <summary><span class="p-title"><strong>Verify:</strong> How were the matches made, was it exact or loose?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+        <summary><span class="p-title"><strong>Verify:</strong> How were the matches made? Was it exact or loose?</span><span class="tag-mandatory">Mandatory</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body">
           <div class="md"><ul>
-<li>What exactly was the match requirement (exact or fuzzy)</li>
+<li>What exactly was the match requirement (exact or fuzzy)?</li>
 </ul>
 </div>
           
@@ -564,7 +564,7 @@
           <div class="md"><ul>
 <li>maybe you want a way to review matches and approve them yourself</li>
 <li>maybe you would like to resolve all discrepancies and then hide information on the dashboard about matching</li>
-<li>maybe you want to visualize information from the newely added dataset</li>
+<li>maybe you want to visualize information from the newly added dataset</li>
 </ul>
 </div>
           
@@ -610,7 +610,7 @@
       <details class="part note">
         <summary><span class="p-title">What is it?</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="part-body md"><ul>
-<li>high performance computing (cluster of resources)</li>
+<li>high-performance computing (cluster of resources)</li>
 </ul>
 </div>
       </details>
@@ -657,7 +657,7 @@
       
       <div class="md"><ul>
 <li>SSH (terminal commands to get onto the cluster)</li>
-<li>use claude to help you get there!</li>
+<li>use Claude to help you get there!</li>
 </ul>
 </div>
 
@@ -756,7 +756,7 @@
       
       <details class="part note">
         <summary><span class="p-title">Example: the same check, as a Python program</span><span class="chev"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
-        <div class="part-body md"><p>The same question, asked by a short Python program. Save it on your laptop as gpu_check.py, copy it to the cluster, ask for a GPU machine, then run <strong>python3 gpu_check.py</strong> there.</p>
+        <div class="part-body md"><p>This is the same check, written as a short Python program. Save it on your laptop as gpu_check.py, copy it to the cluster, ask for a GPU machine, and then run <strong>python3 gpu_check.py</strong> there.</p>
 <div class="split"><div class="code"><span class="code-tag">gpu_check.py</span><pre><span class="t-com"># gpu_check.py: is there a GPU here?</span>
 <span class="t-com"># Run it with: python3 gpu_check.py</span>
 <span class="t-kw">import</span> shutil
@@ -866,6 +866,6 @@
 <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
 <script>window.WORKSHOP = {"firebase": {"apiKey": "AIzaSyBnbCFSODOD29WBmHtu_8E5MhXR4-OMYbQ", "appId": "1:107931725699:web:18faae68813b8fdcba90b6", "authDomain": "advanced-session.firebaseapp.com", "databaseURL": "https://advanced-session-default-rtdb.firebaseio.com", "messagingSenderId": "107931725699", "projectId": "advanced-session", "storageBucket": "advanced-session.firebasestorage.app"}, "firebaseSdk": "https://www.gstatic.com/firebasejs/12.19.0", "room": "advanced-session", "steps": [{"done": "step-0:done", "id": "step-0", "num": "0", "verify": []}, {"done": "step-1:done", "id": "step-1", "num": "1", "verify": ["step-1:verify-1"]}, {"done": "step-2:done", "id": "step-2", "num": "2", "verify": ["step-2:verify-1"]}, {"done": "step-3:done", "id": "step-3", "num": "3", "verify": []}, {"done": "step-4:done", "id": "step-4", "num": "4", "verify": []}, {"done": "step-n:done", "id": "step-n", "num": "n", "verify": ["step-n:verify-1", "step-n:verify-2"]}], "tokenKey": "ws.advanced-session.token"};</script>
-<script src="static/app.js?v=53694062b2"></script>
+<script src="static/app.js?v=f9f8ea07d0"></script>
 </body>
 </html>

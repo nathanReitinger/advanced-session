@@ -466,8 +466,8 @@
       const done = rows.filter(p => p.done).length;
       const count = $('.room-count', stepEl(s));
       count.textContent = `${done}/${rows.length}`;
-      count.title = `${done} of the ${rows.length} ${online ? 'people on the website now' : 'people who checked in'} `
-        + `${done === 1 ? 'is' : 'are'} done`;
+      const who = rows.length === 1 ? 'person' : 'people';
+      count.title = `Done: ${done} of ${rows.length} ${who} ${online ? 'on the website now' : 'who checked in'}`;
       drawGrid($('.grid', stepEl(s)), rows);
     });
 
